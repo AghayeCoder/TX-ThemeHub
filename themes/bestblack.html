@@ -1382,6 +1382,14 @@
       min-height: 44px;
     }
 
+    .stat-mini--hairline {
+      border: var(--hairline);
+      border-radius: 12px;
+      background: var(--card-2);
+      padding: 10px 12px;
+    }
+
+
     #expiry #expiryMeta .stat-mini__value {
       font-weight: 800;
       letter-spacing: 0.1px;
@@ -2164,7 +2172,11 @@
         let expireTs = parseInt(expireRaw, 10);
         if (!isNaN(expireTs) && expireTs > 0 && expireTs < 1e12) expireTs *= 1000;
         const now = Date.now();
-        let daysLeft = Math.max(0, Math.ceil((expireTs - now) / (24 * 60 * 60 * 1000)));
+        const __dayMs = 24 * 60 * 60 * 1000;
+        const __hourMs = 60 * 60 * 1000;
+        const __diffMs = Math.max(0, expireTs - now);
+        let daysLeft = Math.floor(__diffMs / __dayMs);
+        let hoursLeft = Math.floor((__diffMs % __dayMs) / __hourMs);
         console.log("initUI - expireRaw:", expireRaw, "daysLeft:", daysLeft);
         try {
           const expireValue = document.getElementById('expireValue');
@@ -2172,15 +2184,15 @@
           if (expireRaw === '0' || expireTs === 0) {
 
             if (expiryMeta) {
-              const datePill = '<div class="account-text"><i class="fas fa-calendar-alt"></i> نامحدود</div>';
-              const daysPill = '<div class="account-text">∞</div>';
-              expiryMeta.innerHTML = '<div class=\"account-text\">' + dateStr + '</div>' + '<div class=\"account-text\">' + toFa(daysLeft) + ' روز مانده</div>';
+              const datePill = '<div class="stat-mini stat-mini--hairline"><div class="stat-mini__value"><i class="fas fa-calendar-alt"></i> نامحدود</div></div>';
+              const daysPill = '<div class="stat-mini stat-mini--hairline"><div class="stat-mini__value">∞</div></div>';
+              expiryMeta.innerHTML = '<div class=\"stat-mini stat-mini--hairline\"><div class=\"stat-mini__value\">' + dateStr + '</div></div>' + '<div class=\"stat-mini stat-mini--hairline\"><div class=\"stat-mini__value\">' + toFa(daysLeft) + ' روز مانده (' + toFa(hoursLeft) + ' ساعت)</div></div>';
             }
 
 
             if (expiryMeta) {
-              const dateCard = '<div class="stat-mini"><div class="stat-mini__value">' + dateStr + '</div></div>';
-              const daysCard = '<div class="stat-mini"><div class="stat-mini__value">' + toFa(daysLeft) + ' روز مانده</div></div>';
+              const dateCard = '<div class="stat-mini stat-mini--hairline"><div class="stat-mini__value">' + dateStr + '</div></div>';
+              const daysCard = '<div class="stat-mini stat-mini--hairline"><div class="stat-mini__value">' + toFa(daysLeft) + ' روز مانده (' + toFa(hoursLeft) + ' ساعت)</div></div>';
               expiryMeta.innerHTML = dateCard + daysCard;
             }
 
@@ -2192,7 +2204,7 @@
 
             if (expiryMeta) {
 
-              expiryMeta.innerHTML = '<div class=\"account-text\">' + dateStr + '</div>' + '<div class=\"account-text\">' + toFa(daysLeft) + ' روز مانده</div>';
+              expiryMeta.innerHTML = '<div class=\"stat-mini stat-mini--hairline\"><div class=\"stat-mini__value\">' + dateStr + '</div></div>' + '<div class=\"stat-mini stat-mini--hairline\"><div class=\"stat-mini__value\">' + toFa(daysLeft) + ' روز مانده (' + toFa(hoursLeft) + ' ساعت)</div></div>';
             }
 
             (function () {
@@ -2200,10 +2212,7 @@
               var daysClass = 'pill--ok';
               if (daysLeftCalc <= 3) daysClass = 'pill--danger';
               else if (daysLeftCalc <= 7) daysClass = 'pill--warn';
-              expiryMeta.innerHTML = [
-                '<span class="pill pill--meta pill--date"><i class="fas fa-calendar-alt"></i> ' + dateStr + '</span>',
-                '<span class="pill pill--meta pill--days ' + daysClass + '"><span class="num">' + toFa(daysLeftCalc) + '</span> <b>روز مانده</b></span>'
-              ].join('<br>');
+              expiryMeta.innerHTML = '<div class="stat-mini stat-mini--hairline"><div class="stat-mini__value">' + dateStr + '</div></div>' + '<div class="stat-mini stat-mini--hairline"><div class="stat-mini__value"><span class="num">' + toFa(daysLeftCalc) + '</span> <b>روز مانده (' + toFa(hoursLeft) + ' ساعت)</b></div></div>';
             })();
           }
         } catch (e) { } // Ignore errors if jalaali is not loaded
@@ -2237,7 +2246,11 @@
             if (expireRaw === '0' || expireTs === 0) {
               lbl.innerHTML = '<b>∞</b><span>نامحدود</span>';
             } else {
-              lbl.innerHTML = '<b>' + toFa(daysLeftCalc) + '</b><span>روز مانده</span>';
+              const __diffMs2 = Math.max(0, expireTs - Date.now());
+              const __hourMs2 = 60 * 60 * 1000;
+              const __dayMs2 = 24 * 60 * 60 * 1000;
+              const hoursLeftCalc = Math.floor((__diffMs2 % __dayMs2) / __hourMs2);
+              lbl.innerHTML = '<b>' + toFa(daysLeftCalc) + '</b><span>روز مانده (' + toFa(hoursLeftCalc) + ' ساعت)</span>';
             }
           }
         }
@@ -2308,6 +2321,7 @@
         if (expirySection) {
           expirySection.dataset.left = String(daysLeft);
           expirySection.dataset.total = String(totalDays);
+          expirySection.dataset.hours = String(hoursLeft);
         }
       } catch (e) { } // Ignore errors if expire data is not available
     }
@@ -2379,8 +2393,8 @@
               }
             }
             // Build two mini stat-like cards
-            const dateCard = '<div class="stat-mini"><div class="stat-mini__value">' + dateStr + '</div></div>';
-            const daysCard = '<div class="stat-mini"><div class="stat-mini__value">' + (daysLeft === Infinity ? '∞' : toFa(daysLeft)) + (daysLeft === Infinity ? '' : ' روز مانده') + '</div></div>';
+            const dateCard = '<div class="stat-mini stat-mini--hairline"><div class="stat-mini__value">' + dateStr + '</div></div>';
+            const daysCard = '<div class="stat-mini"><div class="stat-mini__value">' + (daysLeft === Infinity ? '∞' : toFa(daysLeft)) + (daysLeft === Infinity ? '' : ' روز مانده (' + toFa(hoursLeft) + ' ساعت)') + '</div></div>';
             expiryMeta.innerHTML = dateCard + daysCard;
           })();
         } catch (e) { }
