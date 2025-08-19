@@ -6,13 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark light" />
   <title>پنل اشتراک | {{ .sId }}</title>
-
   <!-- فونت وزیرمتن -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/jalaali-js/dist/jalaali.min.js"></script>
-
   <style>
     :root {
       --bg: #0f0f10;
@@ -1178,14 +1176,12 @@
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
-
   <style>
     .dot--bad {
       background: #ef4444;
       box-shadow: 0 0 0 3px rgba(239, 68, 68, .18);
     }
   </style>
-
 
   <style>
     .connection-item {
@@ -1545,7 +1541,6 @@
       </div>
     </section>
 
-
     <!-- اتصالات -->
     <section id="connections" class="card">
       <div class="section-header" onclick="toggleConnections()"
@@ -1569,7 +1564,6 @@
         {{ end }}
       </div>
     </section>
-
 
     <!-- آی‌پی سرور -->
     <!-- مصرف کلی -->
@@ -1651,14 +1645,10 @@
 
       </div>
     </section>
-
-
   </main>
 
   <!-- Toasts -->
   <div class="toast-wrap" id="toasts" aria-live="polite"></div>
-
-
 
   <!-- دکمه بازگشت به بالا -->
   <button id="toTop" class="to-top" aria-label="بازگشت به بالا" title="بازگشت به بالا">
@@ -1848,8 +1838,6 @@
       });
     })();
 
-
-
     // Back-to-top behavior
     (function () {
       const btn = document.getElementById('toTop');
@@ -1862,31 +1850,21 @@
       btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     })();
 
-
-
-    // Animate bars that use --val
+    // Update bars that use --val (animation disabled)
     (function () {
       const bars = document.querySelectorAll('.progress');
       bars.forEach(bar => {
-        if (bar.dataset && bar.dataset.unlimited === '1') { return; }
-        const val = (bar.style.getPropertyValue('--val') || '0').replace('%', '');
-        const target = Math.max(0, Math.min(100, parseFloat(val) || 0));
-        bar.style.setProperty('--val', '0%');
-        let t0; const dur = 800;
+        if (bar.dataset && bar.dataset.unlimited === '1') return;
+        const raw = (bar.style.getPropertyValue('--val') || '0').replace('%', '');
+        const val = Math.max(0, Math.min(100, parseFloat(raw) || 0));
+        const now = Math.round(val);
+        bar.style.setProperty('--val', now + '%');
+        bar.setAttribute('aria-valuenow', now);
         const label = bar.parentElement.querySelector('.progress__value');
-        function tick(ts) {
-          if (!t0) t0 = ts; const p = Math.min(1, (ts - t0) / dur);
-          const now = Math.round(target * p);
-          const v = now + '%';
-          bar.style.setProperty('--val', v);
-          bar.setAttribute('aria-valuenow', now);
-          if (label) {
-            label.textContent = '٪' + toFa(now);
-            label.style.insetInlineEnd = `calc(${(target * p).toFixed(1)}% - 18px)`;
-          }
-          if (p < 1) requestAnimationFrame(tick);
+        if (label) {
+          label.textContent = '٪' + toFa(now);
+          label.style.insetInlineEnd = `calc(${now}% - 18px)`;
         }
-        requestAnimationFrame(tick);
       });
     })();
 
@@ -2167,6 +2145,8 @@
         }
         if (label) {
           label.textContent = (totalByte > 0 ? '٪' + toFa(percent) : 'نامحدود');
+
+          label.style.insetInlineEnd = (totalByte > 0 ? `calc(${percent}% - 18px)` : '0');
         }
         const totalValueEl = document.getElementById('totalValue');
         const usedValueEl = document.getElementById('usedValue');
@@ -2360,7 +2340,6 @@
           })();
         } catch (e) { }
 
-
         try {
           (function () {
             const firstConn = document.querySelector('#connectionsContent .connection-item .connection-text');
@@ -2375,7 +2354,6 @@
             if (accEl) accEl.textContent = (accountName || '{{ .sId }}');
           })();
         } catch (e) { }
-
 
         try {
           (function () {
@@ -2480,7 +2458,6 @@
         const large = document.getElementById('qrcodeLarge');
         const btnClose = document.getElementById('qrClose');
         if (!small || !modal || !large) return;
-
         function openQR() {
           try {
             const ctx = large.getContext('2d');
