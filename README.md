@@ -68,3 +68,8 @@ If everything is done correctly, your custom template should now be displayed in
 
 ![Screenshot](./screenshots/vislo.png "vislo")
 </details>
+<details>
+<summary>BestBlack</summary>
+
+![Screenshot](./screenshots/bestblack.png "bblack")
+</details>

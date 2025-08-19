@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
+  <title>پنل اشتراک | {{ .sId }}</title>
+
+  <!-- فونت وزیرمتن -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/jalaali-js/dist/jalaali.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0f0f10;
+      --card: #171717;
+      --card-2: #1b1b1c;
+      --text: #f5f5f5;
+      --muted: #a9a9aa;
+      --accent: #ffc800;
+      --radius: 18px;
+      --gap: 18px;
+      --shadow: 0 10px 25px rgba(0, 0, 0, .18);
+      --hairline: 1px solid rgba(255, 255, 255, .06);
+    }
+
+    /* تم روشن */
+    :root.light {
+      --bg: #f6f7f8;
+      --card: #ffffff;
+      --card-2: #f3f4f5;
+      --text: #151515;
+      --muted: #5e5e60;
+      --accent: #ffb300;
+      --shadow: 0 10px 25px rgba(0, 0, 0, .08);
+      --hairline: 1px solid rgba(0, 0, 0, .06);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Vazirmatn", Tahoma, sans-serif;
+      line-height: 1.6;
+      transition: background .25s ease, color .25s ease;
+    }
+
+    /* نوار اطلاعیه */
+    .newsbar {
+      background: var(--accent);
+      color: #151515;
+      font-weight: 700;
+      padding: 8px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .newsbar span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: ticker 15s linear infinite;
+    }
+
+    @keyframes ticker {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    .topbar {
+      max-width: 1200px;
+      margin: 20px auto 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, 0)), var(--card);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      transition: background .25s ease, color .25s ease, border-color .25s ease;
+      box-shadow: var(--shadow);
+      border: var(--hairline);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Grid Areas */
+    .wrap {
+      max-width: 1200px;
+      margin: 16px auto 40px;
+      padding: 0 14px;
+      display: grid;
+      gap: var(--gap);
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "status"
+        "expiry"
+        "qr"
+        "server"
+        "usage"
+        "total"
+        "remain"
+        "upload"
+        "download"
+        "backup"
+        "streisand"
+        "v2rayng";
+      position: relative;
+      z-index: 0;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      position: relative;
+      transition: transform .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease;
+      box-shadow: var(--shadow);
+      border: var(--hairline);
+      transform: perspective(1000px) rotateX(var(--tiltX, 0deg)) rotateY(var(--tiltY, 0deg));
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .card:hover {
+      transform: perspective(1000px) rotateX(var(--tiltX, 0deg)) rotateY(var(--tiltY, 0deg)) translateZ(10px) translateY(-2px);
+      background: var(--card-2);
+      filter: saturate(1.02);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, .28), 0 0 0 1px rgba(255, 200, 0, .15) inset;
+    }
+
+    .card--center {
+      text-align: center;
+    }
+
+    .card__title {
+      font-weight: 800;
+      font-size: 18px;
+      margin: 2px 0 8px;
+      letter-spacing: .2px;
+      background: linear-gradient(90deg, #ffe17a, var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .card__meta {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, var(--accent), #e6b200);
+      color: #151515;
+      font-weight: 800;
+      padding: 10px 18px;
+      border-radius: 12px;
+      margin-top: 10px;
+      text-decoration: none;
+      display: inline-block;
+      transition: transform .15s ease, filter .2s ease, box-shadow .25s ease;
+      box-shadow: 0 8px 20px rgba(255, 200, 0, .18);
+      transform: translateZ(12px);
+      transform-style: preserve-3d;
+    }
+
+    .btn:hover {
+      filter: brightness(0.97);
+      transform: translateZ(16px) translateY(-1px) scale(1.01);
+    }
+
+    .btn:active {
+      transform: translateZ(8px) translateY(1px) scale(.995)
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      background: #1f1f20;
+      color: #bfbfc0;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .04);
+    }
+
+    :root.light .pill {
+      background: #ececec;
+      color: #666;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%
+    }
+
+    .dot--ok {
+      background: #26d07c;
+      box-shadow: 0 0 0 3px rgba(38, 208, 124, .18);
+    }
+
+    .progress {
+      position: relative;
+      height: 12px;
+      background: #242426;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    :root.light .progress {
+      background: #e7e7e8;
+    }
+
+    .progress>span {
+      position: relative;
+      display: block;
+      height: 100%;
+      width: var(--val, 0%);
+      background: linear-gradient(90deg, var(--accent), #ffd84d);
+      transition: width .35s ease;
+      will-change: width;
+    }
+
+    /* QR */
+    .qr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .qr__img {
+      width: 160px;
+      aspect-ratio: 1/1;
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .qr__note {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 6px
+    }
+
+    /* دکمه تلگرام */
+    .telegram-btn {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+      box-shadow: var(--shadow);
+    }
+
+    .telegram-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .telegram-btn svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* دکمه تغییر تم - بالا سمت چپ (فاصله از نوار اخبار) */
+    .theme-btn {
+      position: fixed;
+      top: calc(60px + env(safe-area-inset-top, 0px));
+      left: calc(12px + env(safe-area-inset-left, 0px));
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      z-index: 1000;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      /* پیش‌فرض: تم تیره → سفید */
+      color: #000;
+      /* آیکن مشکی */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+      transition: transform .2s ease, background .25s ease, color .25s ease;
+    }
+
+    .theme-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .theme-btn:active {
+      transform: translateY(-1px);
+    }
+
+    .theme-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* وقتی تم روشن فعال باشه → دکمه تیره و آیکن سفید */
+    :root.light .theme-btn {
+      background: #000;
+      color: #fff;
+    }
+
+    @media (min-width:640px) {
+      .wrap {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-areas:
+          "status expiry"
+          "qr     qr"
+          "server usage"
+          "total  remain"
+          "upload download"
+          "backup  backup"
+          "streisand v2rayng";
+      }
+    }
+
+    @media (min-width:1024px) {
+      .wrap {
+        grid-template-columns: 1.2fr 1.2fr .9fr;
+        grid-template-areas:
+          "status expiry qr"
+          "server usage  qr"
+          "total  remain backup"
+          "upload download backup"
+          "streisand v2rayng backup";
+      }
+    }
+
+    .newsbar:hover span {
+      animation-play-state: paused;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .newsbar span {
+        animation: none;
+      }
+    }
+
+    :root.light .btn {
+      background: linear-gradient(180deg, var(--accent), #ffa800);
+    }
+
+    .btn:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    #iconSun,
+    #iconMoon {
+      transition: opacity .25s ease;
+    }
+
+    /* --- Visual polish pack --- */
+    body {
+      background-image:
+        radial-gradient(600px 400px at 80% -10%, rgba(255, 200, 0, .08), transparent 60%),
+        radial-gradient(600px 400px at 0% 100%, rgba(255, 200, 0, .06), transparent 60%),
+        repeating-linear-gradient(to bottom, transparent 0 24px, rgba(255, 255, 255, .02) 24px 25px);
+      background-attachment: fixed, fixed, fixed;
+    }
+
+    :root.light body {
+      background-image:
+        radial-gradient(600px 400px at 80% -10%, rgba(255, 179, 0, .14), transparent 60%),
+        radial-gradient(600px 400px at 0% 100%, rgba(255, 179, 0, .12), transparent 60%),
+        repeating-linear-gradient(to bottom, transparent 0 24px, rgba(0, 0, 0, .04) 24px 25px);
+    }
+
+    .newsbar::before,
+    .newsbar::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 36px;
+      pointer-events: none;
+    }
+
+    .newsbar::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--accent), rgba(255, 200, 0, 0));
+    }
+
+    .newsbar::after {
+      right: 0;
+      background: linear-gradient(270deg, var(--accent), rgba(255, 200, 0, 0));
+    }
+
+    /* Shine effect on buttons */
+    .btn::before {
+      content: "";
+      position: absolute;
+      inset: -40% auto -40% -40%;
+      width: 40%;
+      transform: skewX(-20deg) translateX(-100%);
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .35), rgba(255, 255, 255, 0));
+      filter: blur(1px);
+      transition: transform .6s ease;
+    }
+
+    .btn:hover::before {
+      transform: skewX(-20deg) translateX(250%);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn::before {
+        display: none;
+      }
+    }
+
+    /* QR card visual */
+    .qr__img {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .2);
+      border: 1px dashed rgba(255, 255, 255, .08);
+    }
+
+    :root.light .qr__img {
+      border-color: rgba(0, 0, 0, .12);
+    }
+
+    /* Glassy Telegram FAB */
+    .telegram-btn {
+      background: rgba(255, 255, 255, .05);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, .1);
+    }
+
+    :root.light .telegram-btn {
+      background: rgba(0, 0, 0, .05);
+      border-color: rgba(0, 0, 0, .08);
+    }
+
+    /* Selection color */
+    ::selection {
+      background: rgba(255, 200, 0, .35);
+      color: #151515;
+    }
+
+    :root.light ::selection {
+      background: rgba(255, 179, 0, .35);
+      color: #151515;
+    }
+
+    .newsbar:hover span {
+      animation-play-state: paused;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .newsbar span {
+        animation: none;
+      }
+    }
+
+    :root.light .btn {
+      background: linear-gradient(180deg, var(--accent), #ffa800);
+    }
+
+    .btn:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    #iconSun,
+    #iconMoon {
+      transition: opacity .25s ease;
+    }
+
+    /* --- Pro visual pack --- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px) scale(.98);
+      transition: opacity .6s cubic-bezier(.2, .6, .2, 1), transform .6s cubic-bezier(.2, .6, .2, 1);
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset-inline: 18px;
+      top: 0;
+      height: 2px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, rgba(255, 217, 90, 0), rgba(255, 200, 0, .7), rgba(255, 179, 0, 0));
+      opacity: .55;
+      transition: opacity .3s;
+      pointer-events: none;
+    }
+
+    .card:hover::after {
+      opacity: 1;
+    }
+
+    /* Ripple effect */
+    .btn::after {
+      content: "";
+      position: absolute;
+      top: var(--y, 50%);
+      left: var(--x, 50%);
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, .35);
+      pointer-events: none;
+    }
+
+    .btn.rippling::after {
+      animation: ripple .6s ease-out;
+    }
+
+    @keyframes ripple {
+      to {
+        width: 260px;
+        height: 260px;
+        opacity: 0;
+      }
+    }
+
+    /* Pro micro-interactions */
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: radial-gradient(220px 160px at var(--glowX, -999px) var(--glowY, -999px), rgba(255, 200, 0, .08), transparent 60%);
+      opacity: 0;
+      transition: opacity .2s ease;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .dot--ok {
+      position: relative;
+    }
+
+    .dot--ok::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(38, 208, 124, .35);
+      animation: okPulse 2.2s ease-out infinite;
+    }
+
+    @keyframes okPulse {
+      to {
+        box-shadow: 0 0 0 14px rgba(38, 208, 124, 0);
+      }
+    }
+
+    /* Scroll progress bar */
+    #scrollProgress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0;
+      z-index: 1001;
+      background: linear-gradient(90deg, #ffda55, var(--accent));
+      box-shadow: 0 1px 6px rgba(0, 0, 0, .25);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card {
+        transform: none !important;
+      }
+
+      .card:hover {
+        transform: translateY(-2px);
+      }
+    }
+
+    /* --- Tiny pro effects pack 2 --- */
+    /* Progress shimmer */
+    .progress>span::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 38%;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .28), rgba(255, 255, 255, 0));
+      transform: translateX(-100%);
+      animation: barshine 2.2s linear infinite;
+    }
+
+    @keyframes barshine {
+      to {
+        transform: translateX(260%);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .progress>span::after {
+        display: none;
+      }
+    }
+
+    /* Card focus ring for keyboard users */
+    .card:focus-within {
+      box-shadow: var(--shadow), 0 0 0 2px rgba(255, 200, 0, .25) inset, 0 0 0 2px rgba(255, 200, 0, .18);
+    }
+
+    /* Textarea focus style */
+    #backupConfig:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Scrollbar styling */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent) transparent;
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--accent), #ffda55);
+      border-radius: 999px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+
+    /* Theme toggle micro-spin */
+    .theme-btn.spin svg {
+      transform-origin: 50% 50%;
+      animation: rot .45s ease;
+    }
+
+    @keyframes rot {
+      to {
+        transform: rotate(180deg);
+      }
+    }
+
+    /* --- Pro UI extras (gradient titles, toasts, glows) --- */
+    :root.light .card__title {
+      background: linear-gradient(90deg, var(--accent), #ffb800);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Toasts */
+    .toast-wrap {
+      position: fixed;
+      inset-inline-end: 16px;
+      bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 1100;
+    }
+
+    .toast {
+      background: var(--card);
+      color: var(--text);
+      border: var(--hairline);
+      border-radius: 12px;
+      padding: 10px 12px;
+      box-shadow: var(--shadow);
+      transform: translateY(10px);
+      opacity: 0;
+      animation: toastIn .3s ease forwards;
+    }
+
+    .toast.out {
+      animation: toastOut .35s ease forwards;
+    }
+
+    .toast__bar {
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), #ffd84d);
+      width: 100%;
+      border-radius: 999px;
+      margin-top: 6px;
+      transform-origin: left;
+      animation: toastBar 2.8s linear forwards;
+    }
+
+    @keyframes toastIn {
+      to {
+        transform: none;
+        opacity: 1;
+      }
+    }
+
+    @keyframes toastOut {
+      to {
+        transform: translateY(10px);
+        opacity: 0;
+      }
+    }
+
+    @keyframes toastBar {
+      to {
+        transform: scaleX(0);
+      }
+    }
+
+    /* FAB glow */
+    .telegram-btn::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: inherit;
+      background: radial-gradient(60% 60% at 50% 50%, rgba(255, 200, 0, .22), transparent 60%);
+      filter: blur(6px);
+      opacity: 0;
+      transition: opacity .25s ease;
+    }
+
+    .telegram-btn:hover::after {
+      opacity: .75;
+    }
+
+    /* QR overlay texture */
+    .qr__img {
+      position: relative;
+    }
+
+    .qr__img::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      pointer-events: none;
+      background: repeating-linear-gradient(45deg, rgba(0, 0, 0, .02) 0 6px, rgba(255, 255, 255, .04) 6px 12px);
+      mix-blend-mode: overlay;
+    }
+
+    :root.light .qr__img::after {
+      background: repeating-linear-gradient(45deg, rgba(0, 0, 0, .03) 0 6px, rgba(0, 0, 0, .06) 6px 12px);
+      mix-blend-mode: normal;
+    }
+
+    /* --- Loader overlay + animated orbs --- */
+    .loader {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      gap: 14px;
+      background: var(--bg);
+      z-index: 2000;
+      transition: opacity .5s ease, visibility .5s ease;
+    }
+
+    .loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loader__spinner {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--accent), rgba(255, 255, 255, 0) 60%);
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+      mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+      animation: spin 1s linear infinite;
+    }
+
+    .loader__text {
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: .2px
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(1turn);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .loader__spinner {
+        animation: none
+      }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        pointer-events: none;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: .14;
+        z-index: -1;
+      }
+
+      body::before {
+        width: 520px;
+        height: 520px;
+        left: -140px;
+        top: -140px;
+        background: radial-gradient(circle at 30% 30%, rgba(255, 200, 0, .25), transparent 60%);
+        animation: orb1 18s ease-in-out infinite alternate;
+      }
+
+      body::after {
+        width: 560px;
+        height: 560px;
+        right: -180px;
+        bottom: -180px;
+        background: radial-gradient(circle at 70% 70%, rgba(255, 200, 0, .18), transparent 60%);
+        animation: orb2 22s ease-in-out infinite alternate;
+      }
+
+      @keyframes orb1 {
+        0% {
+          transform: translate(0, 0);
+        }
+
+        100% {
+          transform: translate(40px, 30px);
+        }
+      }
+
+      @keyframes orb2 {
+        0% {
+          transform: translate(0, 0);
+        }
+
+        100% {
+          transform: translate(-30px, -40px);
+        }
+      }
+    }
+
+    /* --- Radial gauge for expiry --- */
+    :root {
+      --ring-track: #242426;
+    }
+
+    :root.light {
+      --ring-track: #e7e7e8;
+    }
+
+    .radial {
+      --size: 130px;
+      --thickness: 12px;
+      --pct: 60;
+      width: var(--size);
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      margin: 12px auto 8px;
+      position: relative;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(var(--accent) calc(var(--pct)*1%), var(--ring-track) 0);
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(50% - var(--thickness)), #000 0);
+      mask: radial-gradient(farthest-side, transparent calc(50% - var(--thickness)), #000 0);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .28), inset 0 6px 12px rgba(255, 255, 255, .06), inset 0 -12px 16px rgba(0, 0, 0, .35);
+      transform-style: preserve-3d;
+    }
+
+    .radial::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      pointer-events: none;
+      background:
+        radial-gradient(60% 60% at 30% 30%, rgba(255, 255, 255, .08), transparent 60%);
+      mix-blend-mode: soft-light;
+    }
+
+    .radial__label {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .radial__label b {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .radial__label span {
+      display: block;
+      font-size: 12px;
+      color: #fff;
+      margin-top: 2px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, .45);
+    }
+
+    /* --- Site frame polish --- */
+    .wrap::before {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(255, 200, 0, .08), rgba(255, 200, 0, 0));
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .topbar::after {
+      content: "";
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: -1px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255, 200, 0, .2), rgba(255, 200, 0, 0));
+    }
+
+    .newsbar {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .12);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Back-to-top button */
+    .to-top {
+      position: fixed;
+      left: 20px;
+      bottom: 100px;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: var(--card);
+      color: var(--text);
+      border: var(--hairline);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(8px) scale(.98);
+      transition: opacity .25s ease, transform .25s ease, visibility .25s ease;
+      z-index: 1000;
+    }
+
+    .to-top.show {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+
+    .to-top svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .to-top:hover {
+      filter: brightness(1.05);
+    }
+
+    .swatch:focus-visible::after,
+    .swatch:hover::after {
+      opacity: 1;
+    }
+
+    /* --- Pro: progress label + copyable + perf --- */
+    .progress__value {
+      position: absolute;
+      top: -22px;
+      inset-inline-end: calc(var(--val, 0%) - 18px);
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--card-2);
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: var(--hairline);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .2);
+    }
+
+    :root.light .progress__value {
+      background: #fff;
+    }
+
+    .copyable {
+      cursor: pointer;
+      border-bottom: 1px dashed rgba(255, 255, 255, .25);
+    }
+
+    :root.light .copyable {
+      border-bottom-color: rgba(0, 0, 0, .35);
+    }
+
+    .copyable:hover {
+      filter: brightness(1.05);
+    }
+
+    @supports (content-visibility: auto) {
+      .card {
+        content-visibility: auto;
+        contain-intrinsic-size: 300px;
+      }
+    }
+
+    /* --- 3D depth for inner elements --- */
+    .card>.card__title {
+      transform: translateZ(16px);
+      will-change: transform;
+    }
+
+    .card>.card__meta {
+      transform: translateZ(10px);
+      will-change: transform;
+    }
+
+    .card .btn {
+      transform: translateZ(12px);
+    }
+
+    .card.press {
+      transform: perspective(1000px) rotateX(var(--tiltX, 0deg)) rotateY(var(--tiltY, 0deg)) translateZ(2px) scale(.995);
+    }
+
+    .btn.press {
+      transform: translateZ(8px) translateY(1px) scale(.995);
+      box-shadow: 0 4px 12px rgba(255, 200, 0, .16);
+    }
+
+    /* --- Pro polish mini pack (subtle, no layout change) --- */
+    /* Better numeric alignment across UI */
+    body {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+
+    /* Slightly richer elevation and inner hairline */
+    .card {
+      box-shadow: 0 12px 28px rgba(0, 0, 0, .22), 0 0 0 1px rgba(255, 255, 255, .04) inset;
+    }
+
+    /* Status pill sheen */
+    .pill {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pill::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .25), rgba(255, 255, 255, 0));
+      transform: translateX(-120%);
+      animation: pillshine 3.5s ease-in-out infinite;
+    }
+
+    @keyframes pillshine {
+      50% {
+        transform: translateX(220%);
+      }
+
+      100% {
+        transform: translateX(220%);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pill::before {
+        display: none;
+      }
+    }
+
+    /* Tooltip for copyable text (uses title attr) */
+    .copyable {
+      position: relative;
+    }
+
+    .copyable::after {
+      content: attr(title);
+      position: absolute;
+      left: 50%;
+      bottom: 130%;
+      transform: translateX(-50%) translateY(6px) scale(.98);
+      white-space: nowrap;
+      pointer-events: none;
+      background: var(--card-2);
+      color: var(--text);
+      border: var(--hairline);
+      border-radius: 8px;
+      padding: 6px 8px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, .25);
+      opacity: 0;
+      transition: .18s ease;
+      font-size: 12px;
+    }
+
+    .copyable:hover::after,
+    .copyable:focus-visible::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    /* Accent ring around expiry donut */
+    .radial {
+      position: relative;
+    }
+
+    .radial::before {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      pointer-events: none;
+      background: conic-gradient(from 0turn, rgba(255, 200, 0, .45), rgba(255, 200, 0, 0) 35%, rgba(255, 200, 0, .45) 70%, rgba(255, 200, 0, 0));
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(50% - var(--thickness) - 2px), #000 0);
+      mask: radial-gradient(farthest-side, transparent calc(50% - var(--thickness) - 2px), #000 0);
+      opacity: .6;
+    }
+  </style>
+
+  <!-- Required libs from original page -->
+  <script src="https://cdn.jsdelivr.net/npm/jalaali-js/dist/jalaali.min.js">
+    function toggleConnections() {
+      const content = document.getElementById('connectionsContent');
+      const icon = document.getElementById('toggleIcon');
+      if (content) { content.classList.toggle('expanded'); content.style.display = (content.style.display === 'none' ? 'grid' : 'none'); }
+      if (icon) { icon.classList.toggle('rotated'); }
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+
+
+  <style>
+    .dot--bad {
+      background: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, .18);
+    }
+  </style>
+
+
+  <style>
+    .connection-item {
+      min-width: 0;
+    }
+
+    .connection-item .connection-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      direction: ltr;
+      flex: 1 1 auto;
+    }
+
+    .connection-item .btn {
+      flex: 0 0 auto;
+    }
+
+    /* === Align expiry info lower & centered === */
+    #expiry {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 160px;
+      /* creates vertical space inside the card */
+    }
+
+    #expiry .card__title {
+      margin-bottom: 6px;
+    }
+
+    #expiry #expiryMeta {
+      margin-top: auto;
+      /* push to lower area of the card */
+      text-align: center;
+      /* center the two lines */
+    }
+
+    /* === Center expiryMeta exactly between top and bottom (below title) === */
+    #expiry {
+      display: grid !important;
+      grid-template-rows: auto 1fr auto 1fr;
+      align-items: stretch;
+      min-height: 180px;
+    }
+
+    #expiry .card__title {
+      grid-row: 1;
+      margin-bottom: 0;
+    }
+
+    #expiry #expiryMeta {
+      grid-row: 3;
+      align-self: center;
+      margin: 0;
+      text-align: center;
+    }
+
+    /* === Expiry pills like Status box === */
+    #expiry #expiryMeta {
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      gap: 8px;
+    }
+
+    #expiry #expiryMeta .pill.pill--meta {
+      font-size: 14px;
+      padding: 8px 12px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .05);
+    }
+
+    :root.light #expiry #expiryMeta .pill.pill--meta {
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06);
+    }
+
+    #expiry #expiryMeta .pill.pill--meta i {
+      opacity: .9;
+    }
+
+    /* === Prettier expiry pills (date + days) === */
+    #expiry #expiryMeta {
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      gap: 10px;
+    }
+
+    #expiry #expiryMeta .pill.pill--meta {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(0, 0, 0, .12));
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .05), 0 4px 10px rgba(0, 0, 0, .18);
+      font-weight: 600;
+      letter-spacing: .1px;
+      transition: transform .15s ease;
+    }
+
+    :root.light #expiry #expiryMeta .pill.pill--meta {
+      background: linear-gradient(180deg, rgba(0, 0, 0, .03), rgba(0, 0, 0, .06));
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06), 0 4px 10px rgba(0, 0, 0, .06);
+    }
+
+    #expiry #expiryMeta .pill.pill--meta:hover {
+      transform: translateY(-1px);
+    }
+
+    #expiry #expiryMeta .pill .num {
+      margin-inline-end: 4px;
+    }
+
+    /* State colors for days pill */
+    #expiry #expiryMeta .pill--days.pill--ok {
+      box-shadow: inset 0 0 0 1px rgba(38, 208, 124, .2), 0 4px 10px rgba(38, 208, 124, .15);
+    }
+
+    #expiry #expiryMeta .pill--days.pill--warn {
+      box-shadow: inset 0 0 0 1px rgba(245, 158, 11, .25), 0 4px 10px rgba(245, 158, 11, .18);
+    }
+
+    #expiry #expiryMeta .pill--days.pill--danger {
+      box-shadow: inset 0 0 0 1px rgba(239, 68, 68, .28), 0 4px 10px rgba(239, 68, 68, .22);
+    }
+
+    /* --- Ghost pills for expiry (transparent) --- */
+    #expiry #expiryMeta {
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      gap: 8px;
+      text-align: center;
+    }
+
+    .pill.pill--ghost {
+      background: transparent;
+      color: var(--muted);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    :root.light .pill.pill--ghost {
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10);
+    }
+
+    #expiry #expiryMeta .pill.pill--ghost i {
+      opacity: .9;
+    }
+
+    /* Align ghost pill nicely inside stat-value */
+    .stat-card .stat-value .pill.pill--ghost {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 28px;
+      padding: 6px 10px;
+    }
+
+    /* Use stat-value-like style for expiry lines */
+    #expiry #expiryMeta .account-text {
+      font-size: clamp(0.95rem, 0.9rem + 0.4vw, 1.1rem);
+      font-weight: 700;
+      letter-spacing: 0.1px;
+      color: var(--text);
+      opacity: .92;
+    }
+
+    :root.light #expiry #expiryMeta .account-text {
+      opacity: .96;
+    }
+
+    #expiry #expiryMeta {
+      text-align: center;
+      display: grid;
+      gap: 6px;
+      justify-items: center;
+    }
+
+    /* --- Mini stat-like cards for expiry --- */
+    #expiry #expiryMeta {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      justify-items: stretch;
+      align-items: stretch;
+      margin-top: 6px;
+    }
+
+    #expiry #expiryMeta .stat-mini {
+      background: var(--card-2);
+      border: var(--hairline);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      display: grid;
+      place-items: center;
+      min-height: 44px;
+    }
+
+    #expiry #expiryMeta .stat-mini__value {
+      font-weight: 800;
+      letter-spacing: 0.1px;
+      font-size: clamp(1rem, 0.95rem + 0.4vw, 1.15rem);
+      color: var(--text);
+      opacity: .95;
+    }
+
+    :root.light #expiry #expiryMeta .stat-mini__value {
+      opacity: .98;
+    }
+
+    /* Nudge the copy button up by 1px */
+    #connectionsContent .connection-item .btn {
+      transform: translateY(-2px);
+    }
+
+    /* Center QR code */
+    #qrcode.qr__img,
+    .qr__img#qrcode,
+    canvas.qr__img {
+      display: block;
+      margin-inline: auto;
+    }
+
+    /* If there's a wrapper .qr, center its contents too */
+    .qr {
+      display: grid;
+      justify-items: center;
+    }
+
+    /* === QR Zoom Modal === */
+    #qrcode {
+      cursor: zoom-in;
+    }
+
+    .qr-modal[hidden] {
+      display: none;
+    }
+
+    .qr-modal {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(0, 0, 0, .55);
+      backdrop-filter: blur(2px);
+      z-index: 9999;
+    }
+
+    .qr-modal__content {
+      position: relative;
+      background: var(--card-2);
+      border: var(--hairline);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    #qrcodeLarge {
+      width: 360px;
+      height: 360px;
+      image-rendering: pixelated;
+      display: block;
+    }
+
+    .qr-modal__close {
+      position: absolute;
+      top: 6px;
+      inset-inline-end: 6px;
+      padding: 6px 10px;
+      border-radius: 10px;
+    }
+
+    /* Center the name above QR */
+    .qr .qr__note,
+    #qrNote {
+      text-align: center;
+      margin-right: 30px;
+      justify-self: center;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- Loader Overlay -->
+  <div id="loader" class="loader" aria-live="polite" aria-busy="true" aria-label="در حال بارگذاری">
+    <div class="loader__spinner" aria-hidden="true"></div>
+    <div class="loader__text">در حال بارگذاری…</div>
+  </div>
+
+  <!-- نوار اطلاعیه -->
+  <div class="newsbar">
+    <span>اطلاعیه: لطفاً قبل از تاریخ انقضای اشتراک، اکانت خود را تمدید کنید • سرورهای جدید اضافه شدند • نسخه جدید
+      اپلیکیشن منتشر شد</span>
+  </div>
+
+  <!-- دکمه تغییر تم (بالا-چپ) -->
+  <button id="themeToggle" class="theme-btn" aria-label="تغییر حالت روشن/تاریک" aria-pressed="false" title="تغییر تم">
+    <!-- آیکن ماه -->
+    <svg id="iconMoon" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" d="M21 12.79A9 9 0 0 1 11.21 3 7 7 0 1 0 21 12.79z" />
+    </svg>
+    <!-- آیکن خورشید -->
+    <svg id="iconSun" viewBox="0 0 24 24" aria-hidden="true" style="display:none">
+      <path fill="currentColor"
+        d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.8 1.42-1.42zm10.48 0l1.79-1.79 1.41 1.41-1.79 1.8-1.41-1.42zM12 4h0-2V2h2V4zm0 18h0-2v-2h2v2zM4 12H2v-2h2v2zm18 0h-2v-2h2v2zM6.76 19.16l-1.42 1.42-1.79-1.8 1.41-1.41 1.8 1.79zm12.69-.38l1.79 1.79-1.41 1.41-1.8-1.79 1.42-1.41zM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z" />
+    </svg>
+  </button>
+
+  <div class="topbar">
+    پنل وضعیت اکانت VPN — مشاهده اتصال، تاریخ انقضا، آی‌پی سرور و مدیریت اشتراک
+  </div>
+
+  <main class="wrap">
+
+    <!-- اتصال -->
+    <section id="status" class="card">
+      <div class="card__title">وضعیت اکانت</div>
+      <div class="stats-row"
+        style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;align-items:stretch;margin-top:8px;">
+        <div class="stat-card"
+          style="display:grid;grid-template-rows:auto auto auto;gap:4px;background:var(--card-2);padding:12px;border-radius:12px;border:var(--hairline)">
+          <div class="stat-icon status"><i class="fas fa-check-circle"></i></div>
+          <div class="stat-value" id="statusValue">—</div>
+          <div class="stat-label">وضعیت</div>
+        </div>
+        <div class="stat-card"
+          style="display:grid;grid-template-rows:auto auto auto;gap:4px;background:var(--card-2);padding:12px;border-radius:12px;border:var(--hairline)">
+          <div class="stat-icon expire"><i class="fas fa-calendar-alt"></i></div>
+          <div class="stat-value" id="expireValue">—</div>
+          <div class="stat-label">اسم اکانت</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- انقضا -->
+    <section id="expiry" class="card card--center" data-left="18" data-total="30">
+      <div class="card__title">تاریخ انقضا</div>
+      </div>
+      <div class="card__meta" id="expiryMeta">—</div>
+    </section>
+
+    <!-- QR -->
+    <section id="qr" class="card">
+      <div class="qr">
+        <div>
+          <h2 class="usage-title">کد QR</h2>
+          <p style="color:#94a3b8;margin-bottom:1rem;">برای وارد کردن پیکربندی اسکن کنید</p>
+
+          <div class="qr__note" id="qrNote"></div>
+        </div>
+      </div>
+      <canvas id="qrcode" class="qr__img" style="display:block;margin:0 auto" width="160" height="160"></canvas>
+      </div>
+    </section>
+
+
+    <!-- اتصالات -->
+    <section id="connections" class="card">
+      <div class="section-header" onclick="toggleConnections()"
+        style="display:flex;justify-content:space-between;align-items:center;">
+        <h2 class="section-title">کانفیگ شما</h2><i class="fas fa-chevron-down toggle-icon" id="toggleIcon"></i>
+      </div>
+      <div class="card__meta">لیست کانفیگ‌ها — برای کپی روی هر مورد بزنید.</div>
+      <div style="margin-top:12px">
+        <a class="btn" onclick="copyAllConnections()">کپی همه</a>
+      </div>
+      <div id="connectionsContent" style="margin-top:12px; display:grid; gap:10px;">
+        {{ range .result }}
+        <div class="connection-item"
+          style="min-width:0; display:flex; gap:8px; align-items:center; background:var(--card-2); padding:10px; border-radius:10px; border: var(--hairline);">
+          <span class="connection-text"
+            style="direction:ltr; white-space:nowrap; flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis">{{
+            . }}</span>
+          <button class="btn" style="padding:6px 10px; flex:0 0 auto"
+            onclick="copyToClipboard(trimRemark('{{ . }}'))">کپی</button>
+        </div>
+        {{ end }}
+      </div>
+    </section>
+
+
+    <!-- آی‌پی سرور -->
+    <!-- مصرف کلی -->
+    <section id="usage" class="card">
+      <div class="card__title" style="text-align:center">حجم مصرفی</div>
+      <div class="card__meta" id="usageSummary" style="text-align:center"></div>
+      <div id="usageBar" class="progress" role="progressbar" aria-label="درصد استفاده" aria-valuemin="0"
+        aria-valuemax="100" aria-valuenow="0" style="--val:0%"><span></span></div>
+      <div class="usage-details" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;">
+        <div class="usage-detail">
+          <div class="usage-detail-value" id="usedValue">۰</div>
+          <div class="usage-detail-label"><span>استفاده شده</span></div>
+        </div>
+        <div class="usage-detail">
+          <div class="usage-detail-value" id="remainingValue">۰</div>
+          <div class="usage-detail-label"><span>باقی مانده</span></div>
+        </div>
+        <div class="usage-detail">
+          <div class="usage-detail-value" id="totalValue">۰</div>
+          <div class="usage-detail-label"><span>کل حجم</span></div>
+        </div>
+      </div>
+      <div class="progress__value" id="usageLabel">٪۰</div>
+    </section>
+
+    <!-- حجم کل -->
+    <section id="total" class="card card--center">
+      <div class="card__title">حجم کل</div>
+      <div class="card__meta"><b id="totalValue">—</b></div>
+    </section>
+
+    <!-- حجم باقی‌مانده -->
+    <section id="remain" class="card card--center">
+      <div class="card__title">حجم باقی‌مانده</div>
+      <div class="card__meta"><b id="remainingValue">—</b></div>
+    </section>
+
+    <!-- میزان آپلود -->
+    <section id="upload" class="card card--center">
+      <div class="card__title">میزان آپلود</div>
+      <div class="card__meta"><b id="uploadValue">—</b></div>
+    </section>
+
+    <!-- میزان دانلود -->
+    <section id="download" class="card card--center">
+      <div class="card__title">میزان دانلود</div>
+      <div class="card__meta"><b id="downloadValue">—</b></div>
+    </section>
+
+    <!-- کانفیگ بک‌آپ -->
+    <!-- باکس دانلود Streisand -->
+    <section id="streisand" class="card">
+      <div class="card__title">دانلود Streisand</div>
+      <p class="card__meta">نسخه پیشنهادی iOS برای اتصال به سرورهای V2Ray و Shadowsocks</p>
+      <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn" href="https://apps.apple.com/us/app/streisand/id6450534064" target="_blank">دانلود از
+          اپ استور</a>
+        <a class="btn" href="streisand://import/{{ .subUrl }}" target="_blank">وارد کردن به برنامه</a>
+      </div>
+    </section>
+
+    <!-- باکس دانلود V2RayNG -->
+    <section id="v2rayng" class="card">
+      <div class="card__title">دانلود V2RayNG</div>
+      <p class="card__meta">محبوب‌ترین کلاینت اندروید برای اتصال به سرورهای V2Ray</p>
+      <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn" href="https://github.com/2dust/v2rayNG/releases/latest" target="_blank">دانلود از
+          گیتهاب</a>
+        <a class="btn" href="v2rayng://install-config?url={{ .subUrl }}" target="_blank">وارد کردن به برنامه</a>
+      </div>
+    </section>
+    <!-- باکس دانلود V2RayNG -->
+    <section id="v2rayng" class="card">
+      <div class="card__title">دانلود V2RayN</div>
+      <p class="card__meta">محبوب‌ترین کلاینت ویندوز برای اتصال به سرورهای V2Ray</p>
+      <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn" href="https://github.com/2dust/v2rayN/releases" target="_blank">دانلود از
+          گیتهاب</a>
+
+      </div>
+    </section>
+
+
+  </main>
+
+  <!-- Toasts -->
+  <div class="toast-wrap" id="toasts" aria-live="polite"></div>
+
+
+
+  <!-- دکمه بازگشت به بالا -->
+  <button id="toTop" class="to-top" aria-label="بازگشت به بالا" title="بازگشت به بالا">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" d="M7.41 14.59 12 10l4.59 4.59L18 13l-6-6-6 6z" />
+    </svg>
+  </button>
+
+  <!-- دکمه تلگرام -->
+  <a href="https://t.me/YourChannelName" target="_blank" class="telegram-btn" aria-label="کانال تلگرام">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+      <circle cx="120" cy="120" r="120" fill="#0088cc" />
+      <path fill="#fff"
+        d="M195.1 66.9c2.3-9-2.2-12.5-11.7-9.2l-142 54c-9.6 3.8-9.5 9.1-1.7 11.5l36.4 11.4 14.1 42.9c1.8 5.1 0.9 7.1 6.2 7.1 4.1 0 5.9-1.9 8.1-4.1 1.4-1.4 9.9-9.6 19.4-19 13.3 9.8 27.4 20.2 33.6 25.7 3.7 3.2 6.7 2.4 7.6-3.4l13.6-85.9z" />
+    </svg>
+  </a>
+
+  <script>
+    const THEME_KEY = "vpn_panel_theme";
+    // اعداد فارسی
+    function toFa(x) { return String(x).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+
+    function setPressed(el, isLight) {
+      el.setAttribute("aria-pressed", String(isLight));
+      document.getElementById("iconSun").style.display = isLight ? "block" : "none";
+      document.getElementById("iconMoon").style.display = isLight ? "none" : "block";
+      el.title = isLight ? "حالت تاریک" : "حالت روشن";
+      // همگام‌سازی رنگ نوار وضعیت موبایل
+      const meta = document.querySelector('meta[name="theme-color"]') || (function () {
+        const m = document.createElement('meta'); m.setAttribute('name', 'theme-color'); document.head.appendChild(m); return m;
+      })();
+      meta.setAttribute('content', isLight ? '#ffffff' : '#0f0f10');
+    }
+
+    function applyTheme(theme) {
+      const isLight = theme === "light";
+      document.documentElement.classList.toggle("light", isLight);
+      setPressed(document.getElementById("themeToggle"), isLight);
+    }
+
+    // بارگذاری اولیه: از LocalStorage یا تم سیستم
+    (function initTheme() {
+      let saved = localStorage.getItem(THEME_KEY);
+      if (!saved) {
+        const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+        saved = prefersLight ? "light" : "dark";
+      }
+      applyTheme(saved);
+    })();
+
+    // تغییر تم با دکمه
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      const nowLight = !document.documentElement.classList.contains("light");
+      const theme = nowLight ? "light" : "dark";
+      applyTheme(theme);
+      localStorage.setItem(THEME_KEY, theme);
+      const btnEl = document.getElementById("themeToggle");
+      btnEl.classList.add("spin");
+      setTimeout(() => btnEl.classList.remove("spin"), 480);
+    });
+
+    // همگام‌سازی با تغییر تم سیستم اگر کاربر ترجیح ذخیره نکرده باشد
+    const mq = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)");
+    if (mq && mq.addEventListener) {
+      mq.addEventListener("change", e => {
+        if (!localStorage.getItem(THEME_KEY)) {
+          applyTheme(e.matches ? "light" : "dark");
+        }
+      });
+    }
+
+    // تابع کپی کانفیگ
+    async function copyConfig() {
+      const text = document.getElementById("backupConfig").value.trim();
+      try {
+        await navigator.clipboard.writeText(text);
+        const btn = document.getElementById("copyBtn");
+        const prev = btn.textContent;
+        btn.textContent = "کپی شد ✅";
+        setTimeout(() => btn.textContent = prev, 1500);
+        toast('کانفیگ کپی شد ✅');
+      } catch (err) {
+        alert("کپی ناموفق بود. لطفاً دستی کپی کنید.");
+        toast('کپی ناموفق بود ❌');
+      }
+    }
+
+    // انیمیشن نمایش تدریجی کارت‌ها
+    (function () {
+      const els = document.querySelectorAll('.card, .topbar');
+      els.forEach((el, i) => {
+        el.classList.add('reveal');
+      });
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((en) => {
+            if (en.isIntersecting) {
+              en.target.classList.add('in');
+              io.unobserve(en.target);
+            }
+          });
+        }, { threshold: .14 });
+        els.forEach((el, i) => setTimeout(() => io.observe(el), i * 60));
+      } else {
+        els.forEach((el, i) => setTimeout(() => el.classList.add('in'), i * 60));
+      }
+    })();
+
+    // ریپل روی دکمه‌ها
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('pointerdown', (e) => {
+        const r = btn.getBoundingClientRect();
+        btn.style.setProperty('--x', (e.clientX - r.left) + 'px');
+        btn.style.setProperty('--y', (e.clientY - r.top) + 'px');
+        btn.classList.add('rippling');
+        btn.addEventListener('animationend', () => btn.classList.remove('rippling'), { once: true });
+      });
+    });
+
+    // Scroll progress bar
+    (function () {
+      const id = 'scrollProgress';
+      let bar = document.getElementById(id);
+      if (!bar) { bar = document.createElement('div'); bar.id = id; document.body.appendChild(bar); }
+      const update = () => {
+        const h = document.documentElement;
+        const max = h.scrollHeight - h.clientHeight;
+        const p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+        bar.style.width = p + '%';
+      };
+      document.addEventListener('scroll', update, { passive: true });
+      update();
+    })();
+
+    // Subtle tilt + glow on cards (desktop pointers only)
+    (function () {
+      const fine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!fine || reduce) return;
+      const cards = document.querySelectorAll('.card');
+      const damp = 6; // smaller = stronger tilt
+      cards.forEach(card => {
+        card.addEventListener('pointermove', (e) => {
+          const r = card.getBoundingClientRect();
+          const x = e.clientX - r.left, y = e.clientY - r.top;
+          const rx = -((y / r.height) - .5) * (damp); // deg
+          const ry = ((x / r.width) - .5) * (damp);
+          card.style.setProperty('--tiltX', rx + 'deg');
+          card.style.setProperty('--tiltY', ry + 'deg');
+          card.style.setProperty('--glowX', x + 'px');
+          card.style.setProperty('--glowY', y + 'px');
+        });
+        card.addEventListener('pointerleave', () => {
+          card.style.removeProperty('--tiltX');
+          card.style.removeProperty('--tiltY');
+          card.style.removeProperty('--glowX');
+          card.style.removeProperty('--glowY');
+        });
+      });
+    })();
+
+    // Toast helper
+    function toast(msg, ms = 2800) {
+      const wrap = document.getElementById('toasts');
+      if (!wrap) return;
+      const el = document.createElement('div');
+      el.className = 'toast';
+      el.innerHTML = '<div>' + msg + '</div><div class="toast__bar"></div>';
+      wrap.appendChild(el);
+      setTimeout(() => { el.classList.add('out'); el.addEventListener('animationend', () => el.remove(), { once: true }); }, ms);
+    }
+
+    // Toasts for links
+    document.querySelectorAll('a.btn[download]').forEach(a => {
+      a.addEventListener('click', () => toast('دانلود فایل کانفیگ شروع شد ⬇️'));
+    });
+    document.querySelectorAll('a.btn[target="_blank"]').forEach(a => {
+      a.addEventListener('click', () => toast('در حال باز کردن…'));
+    });
+
+    // Hide loader after load
+    (function () {
+      const loader = document.getElementById('loader');
+      if (!loader) return;
+      window.addEventListener('load', () => {
+        setTimeout(() => loader.classList.add('hidden'), 650);
+      });
+    })();
+
+
+
+    // Back-to-top behavior
+    (function () {
+      const btn = document.getElementById('toTop');
+      if (!btn) return;
+      const toggle = () => {
+        (window.scrollY || document.documentElement.scrollTop) > 320 ? btn.classList.add('show') : btn.classList.remove('show');
+      };
+      document.addEventListener('scroll', toggle, { passive: true });
+      toggle();
+      btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    })();
+
+
+
+    // Animate bars that use --val
+    (function () {
+      const bars = document.querySelectorAll('.progress');
+      bars.forEach(bar => {
+        if (bar.dataset && bar.dataset.unlimited === '1') { return; }
+        const val = (bar.style.getPropertyValue('--val') || '0').replace('%', '');
+        const target = Math.max(0, Math.min(100, parseFloat(val) || 0));
+        bar.style.setProperty('--val', '0%');
+        let t0; const dur = 800;
+        const label = bar.parentElement.querySelector('.progress__value');
+        function tick(ts) {
+          if (!t0) t0 = ts; const p = Math.min(1, (ts - t0) / dur);
+          const now = Math.round(target * p);
+          const v = now + '%';
+          bar.style.setProperty('--val', v);
+          bar.setAttribute('aria-valuenow', now);
+          if (label) {
+            label.textContent = '٪' + toFa(now);
+            label.style.insetInlineEnd = `calc(${(target * p).toFixed(1)}% - 18px)`;
+          }
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    })();
+
+    // Copy on click for elements with .copyable
+    (function () {
+      function handleActivate(el) {
+        const text = el.dataset.copy || el.textContent.trim();
+        navigator.clipboard.writeText(text).then(() => toast('کپی شد ✅')).catch(() => toast('کپی ناموفق ❌'));
+      }
+      document.querySelectorAll('.copyable').forEach(el => {
+        el.addEventListener('click', () => handleActivate(el));
+        el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleActivate(el); } });
+      });
+    })();
+
+    // 3D press feedback for cards & buttons
+    (function () {
+      const fine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+      if (!fine) return;
+      const pressOn = el => el.classList.add('press');
+      const pressOff = el => el.classList.remove('press');
+      document.querySelectorAll('.card').forEach(el => {
+        el.addEventListener('pointerdown', () => pressOn(el));
+        el.addEventListener('pointerup', () => pressOff(el));
+        el.addEventListener('pointerleave', () => pressOff(el));
+      });
+      document.querySelectorAll('.btn').forEach(el => {
+        el.addEventListener('pointerdown', () => pressOn(el));
+        el.addEventListener('pointerup', () => pressOff(el));
+        el.addEventListener('pointerleave', () => pressOff(el));
+      });
+    })();
+  </script>
+
+
+  <script>
+
+    // ---- QR loader & generator (robust) ----
+    function loadScript(url, onload, onerror) {
+      try {
+        const s = document.createElement('script');
+        s.src = url;
+        s.async = true;
+        s.onload = () => onload && onload();
+        s.onerror = () => onerror && onerror();
+        document.head.appendChild(s);
+      } catch (e) { onerror && onerror(); }
+    }
+    function ensureQRious(then) {
+      if (window.QRious) { then(); return; }
+      const cdns = [
+        "https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js",
+        "https://unpkg.com/qrious@4.0.2/dist/qrious.min.js"
+      ];
+      let i = 0;
+      (function tryNext() {
+        if (window.QRious) { then(); return; }
+        if (i >= cdns.length) { /* give up silently */ return; }
+        loadScript(cdns[i++], () => then(), () => tryNext());
+      })();
+    }
+    function ensureAndMakeQR(subUrl) {
+      try {
+        const el = document.getElementById('qrcode');
+        if (!el) return;
+        const val = (subUrl || "").trim();
+        if (val.length < 6) return;
+        ensureQRious(() => {
+          try {
+            new QRious({ element: el, value: val, size: 160, level: 'H' });
+          } catch (e) {
+          }
+        });
+      } catch (e) {
+      }
+    }
+
+    // ---- end QR helpers ----
+
+    function toFa(x) { return String(x).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+    function setTextAll(id, value) { try { document.querySelectorAll('[id="' + id + '"]').forEach(el => el.textContent = value); } catch (e) { } }
+    function formatBytes(bytes, decimals = 2) {
+      if (!isFinite(bytes)) return '—';
+      if (bytes === 0) return '0 بایت';
+      const k = 1024, sizes = ['بایت', 'کیلوبایت', 'مگابایت', 'گیگابایت', 'ترابایت'];
+      const i = Math.floor(Math.log(Math.abs(bytes)) / Math.log(k));
+      const result = (Math.abs(bytes) / Math.pow(k, i)).toFixed(decimals);
+      return (parseFloat(result) * Math.sign(bytes)) + ' ' + sizes[i];
+    }
+    async function copyToClipboard(text) {
+      // Try modern Clipboard API first (works on HTTPS / localhost)
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          toast('کپی شد ✅');
+          return;
+        }
+        throw new Error('Insecure context or no clipboard');
+      } catch (e) {
+        // Fallback: hidden textarea + execCommand
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.top = '-9999px';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (ok) { toast('کپی شد ✅'); return; }
+          throw new Error('execCommand failed');
+        } catch {
+          toast('کپی ناموفق ❌');
+        }
+      }
+    }
+    function copyAllConnections() {
+      const texts = document.querySelectorAll('.connection-text');
+      const all = Array.from(texts).map(el => el.textContent.trim()).join('\n');
+      copyToClipboard(all);
+    }
+    function parseHostFromLink(link) {
+      try {
+        const at = link.indexOf('@');
+        if (at !== -1) {
+          const rest = link.slice(at + 1);
+          const hostPort = rest.split(/[\/\?]/)[0];
+          return hostPort;
+        }
+        const u = new URL(link);
+        return u.host;
+      } catch { return ''; }
+    }
+
+    function trimRemark(uri) {
+      if (uri.startsWith("vmess://")) {
+        try {
+          const b64 = uri.substring(8);
+          const obj = JSON.parse(atob(b64));
+          const regex = /^(.*?)\-\d+(?:\.\d+)?GB/;
+          const match = obj.ps?.match(regex);
+          if (match) obj.ps = match[1]; // keep only group 1
+          return "vmess://" + btoa(JSON.stringify(obj));
+        } catch {
+          return uri;
+        }
+      }
+
+      // Handle vless / trojan / shadowsocks
+      let base = uri;
+      let remark = "";
+
+      if (uri.includes("#")) {
+        const parts = uri.split("#");
+        base = parts[0];
+        remark = decodeURIComponent(parts.slice(1).join("#")); // handle multiple #
+      }
+
+      const regex = /^(.*?)\-\d+(?:\.\d+)?GB/;
+      const match = remark.match(regex);
+
+      if (match) {
+        return base + "#" + encodeURIComponent(match[1]);
+      } else if (remark) {
+        return base + "#" + encodeURIComponent(remark);
+      }
+
+      return uri;
+    }
+
+    // Process subscription file (multiple links separated by \n)
+    function trimSubscription(subText) {
+      return subText
+        .split(/\r?\n/)        // split by new lines
+        .map(line => line.trim())
+        .filter(line => line)  // remove empty lines
+        .map(trimRemark)       // apply cleaner
+        .join("\n");           // return as text again
+    }
+
+
+    // Extract a human-friendly account name from a share URI
+
+    // --- Clean up noisy tags like "Name-20GB | 30d • 2025/09/01" -> "Name"
+
+    // --- Persian/Latin aware cleaner: keep only the bare account name
+
+    // === Helpers for QR note name extraction ===
+    function cleanName(s) {
+      if (!s) return '';
+      try { s = decodeURIComponent(s); } catch { }
+      s = String(s).replace(/\s+/g, ' ').trim();
+      // Convert Persian digits to Latin for easier matching
+      const faDigits = '۰۱۲۳۴۵۶۷۸۹';
+      s = s.replace(/[۰-۹]/g, d => String(faDigits.indexOf(d)));
+      // Data caps (GB/MB/TB) and Persian units
+      s = s.replace(/[-–—]?\s*\d+(?:\.\d+)?\s?(?:GB|Mb|MB|Tb|TB)\b/gi, '');
+      s = s.replace(/[-–—]?\s*\d+(?:\.\d+)?\s*(?:گیگ|مگ|ترابایت)\b/g, '');
+      // Durations (7d, 30d, ۷ روز, 30روزه)
+      s = s.replace(/[-–—]?\s*\d+\s*d\b/gi, '');
+      s = s.replace(/[-–—]?\s*\d+\s*(?:روز(?:ه)?)/g, '');
+      // Dates (Gregorian or Jalali-like)
+      s = s.replace(/\b20\d{2}[-\/\.]\d{1,2}[-\/\.]\d{1,2}\b/g, '');
+      s = s.replace(/\b1[34]\d{2}[-\/\.]\d{1,2}[-\/\.]\d{1,2}\b/g, '');
+      // Cut at common separators
+      s = s.split(/[|•،,؛;]/)[0];
+      // Remove bracketed info
+      s = s.replace(/[\(\[\{（【].*?[\)\]\}）】]/g, '');
+      // Remove trailing -123 or _123, and stray hyphens/underscores at ends
+      s = s.replace(/\s*[-–—_]\s*\d+$/, '');
+      s = s.replace(/^[-–—_]+\s*|\s*[-–—_]+$/g, '');
+      // Final tidy
+      return s.replace(/\s{2,}/g, ' ').trim();
+    }
+
+    function extractDisplayName(uri) {
+      try {
+        if (!uri) return '';
+        if (uri.startsWith('vmess://')) {
+          const b64 = uri.slice(8);
+          const obj = JSON.parse(atob(b64));
+          let name = (obj && obj.ps) ? obj.ps : (obj && obj.add ? obj.add : '');
+          return cleanName(name);
+        }
+        // vless / trojan / shadowsocks: prefer fragment (#tag)
+        const hashIndex = uri.indexOf('#');
+        if (hashIndex !== -1) {
+          return cleanName(uri.slice(hashIndex + 1));
+        }
+        // Fallback to host after '@'
+        const at = uri.indexOf('@');
+        if (at !== -1) {
+          const rest = uri.slice(at + 1);
+          return cleanName(rest.split(/[\/\?]/)[0]);
+        }
+        return '';
+      } catch { return ''; }
+    }
+
+    // Minimal stripper: keep only Persian/Latin letters, digits, spaces and .-_+
+    function __stripNameSymbols(s) {
+      try { s = String(s); } catch { return ''; }
+      return s.replace(/[^0-9A-Za-z\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\s\.\-_\+]+/g, '').trim();
+    }
+    function initUI() {
+      try {
+        const subUrl = '{{ .subUrl }}';
+        ensureAndMakeQR(subUrl);
+        // ...other code...
+      } catch (e) {
+      }
+      try {
+        let totalByte = parseInt('{{ .totalByte }}', 10);
+        let downloadByte = parseInt('{{ .downloadByte }}', 10);
+        let uploadByte = parseInt('{{ .uploadByte }}', 10);
+        if (isNaN(totalByte)) totalByte = 0;
+        if (isNaN(downloadByte)) downloadByte = 0;
+        if (isNaN(uploadByte)) uploadByte = 0;
+        const usedBytes = downloadByte + uploadByte;
+        const remainingBytes = totalByte === 0 ? 0 : Math.max(0, totalByte - usedBytes);
+        const percent = totalByte === 0 ? 0 : Math.max(0, Math.min(100, Math.round((usedBytes / totalByte) * 100)));
+        const bar = document.getElementById('usageBar');
+        const label = document.getElementById('usageLabel');
+        if (bar) {
+          if (totalByte > 0) {
+            bar.style.setProperty('--val', percent + '%');
+            bar.setAttribute('aria-valuenow', percent);
+            delete bar.dataset.unlimited;
+          } else {
+            bar.style.setProperty('--val', '0%');
+            bar.setAttribute('aria-valuenow', '0');
+            bar.dataset.unlimited = '1';
+          }
+        }
+        if (label) {
+          label.textContent = (totalByte > 0 ? '٪' + toFa(percent) : 'نامحدود');
+        }
+        const totalValueEl = document.getElementById('totalValue');
+        const usedValueEl = document.getElementById('usedValue');
+        const remainValueEl = document.getElementById('remainingValue');
+        const uploadValueEl = document.getElementById('uploadValue');
+        const downloadValueEl = document.getElementById('downloadValue');
+        if (totalValueEl) totalValueEl.textContent = (totalByte === 0 ? 'نامحدود' : formatBytes(totalByte));
+        setTextAll('totalValue', (totalByte === 0 ? 'نامحدود' : formatBytes(totalByte)));
+        if (usedValueEl) usedValueEl.textContent = (formatBytes(downloadByte + uploadByte));
+        if (remainValueEl) remainValueEl.textContent = (totalByte === 0 ? 'نامحدود' : formatBytes(remainingBytes));
+        setTextAll('remainingValue', (totalByte === 0 ? 'نامحدود' : formatBytes(remainingBytes)));
+        if (uploadValueEl) uploadValueEl.textContent = formatBytes(uploadByte);
+        if (downloadValueEl) downloadValueEl.textContent = formatBytes(downloadByte);
+        const expireRaw = '{{ .expire }}';
+        let expireTs = parseInt(expireRaw, 10);
+        if (!isNaN(expireTs) && expireTs > 0 && expireTs < 1e12) expireTs *= 1000;
+        const now = Date.now();
+        let daysLeft = Math.max(0, Math.ceil((expireTs - now) / (24 * 60 * 60 * 1000)));
+        console.log("initUI - expireRaw:", expireRaw, "daysLeft:", daysLeft);
+        try {
+          const expireValue = document.getElementById('expireValue');
+          const expiryMeta = document.getElementById('expiryMeta');
+          if (expireRaw === '0' || expireTs === 0) {
+
+            if (expiryMeta) {
+              const datePill = '<div class="account-text"><i class="fas fa-calendar-alt"></i> نامحدود</div>';
+              const daysPill = '<div class="account-text">∞</div>';
+              expiryMeta.innerHTML = '<div class=\"account-text\">' + dateStr + '</div>' + '<div class=\"account-text\">' + toFa(daysLeft) + ' روز مانده</div>';
+            }
+
+
+            if (expiryMeta) {
+              const dateCard = '<div class="stat-mini"><div class="stat-mini__value">' + dateStr + '</div></div>';
+              const daysCard = '<div class="stat-mini"><div class="stat-mini__value">' + toFa(daysLeft) + ' روز مانده</div></div>';
+              expiryMeta.innerHTML = dateCard + daysCard;
+            }
+
+          } else {
+            const d = new Date(expireTs);
+            const gy = d.getFullYear(), gm = d.getMonth() + 1, gd = d.getDate();
+            const j = jalaali.toJalaali(gy, gm, gd);
+            const dateStr = toFa(j.jy) + '/' + toFa(j.jm) + '/' + toFa(j.jd);
+
+            if (expiryMeta) {
+
+              expiryMeta.innerHTML = '<div class=\"account-text\">' + dateStr + '</div>' + '<div class=\"account-text\">' + toFa(daysLeft) + ' روز مانده</div>';
+            }
+
+            (function () {
+              var daysLeftCalc = daysLeft;
+              var daysClass = 'pill--ok';
+              if (daysLeftCalc <= 3) daysClass = 'pill--danger';
+              else if (daysLeftCalc <= 7) daysClass = 'pill--warn';
+              expiryMeta.innerHTML = [
+                '<span class="pill pill--meta pill--date"><i class="fas fa-calendar-alt"></i> ' + dateStr + '</span>',
+                '<span class="pill pill--meta pill--days ' + daysClass + '"><span class="num">' + toFa(daysLeftCalc) + '</span> <b>روز مانده</b></span>'
+              ].join('<br>');
+            })();
+          }
+        } catch (e) { } // Ignore errors if jalaali is not loaded
+
+        const gauge = document.getElementById('expiryGauge');
+        const expirySection = document.getElementById('expiry');
+        if (gauge) {
+          // Prefer explicit data attributes if present
+          let leftAttr = expirySection ? parseInt(expirySection.getAttribute('data-left') || '', 10) : NaN;
+          let totalAttr = expirySection ? parseInt(expirySection.getAttribute('data-total') || '', 10) : NaN;
+
+          let daysLeftCalc = (!isNaN(leftAttr) && leftAttr >= 0) ? leftAttr : daysLeft;
+          // Decide total days:
+          let totalDays = (!isNaN(totalAttr) && totalAttr > 0) ? totalAttr : 30;
+
+          // If no explicit total is provided and we computed daysLeft from expiry, try to infer:
+          // - If daysLeft > 30, assume the total equals the remaining (i.e., new/unknown start): show 100%
+          if ((isNaN(totalAttr) || totalAttr <= 0) && daysLeftCalc > 30) {
+            totalDays = daysLeftCalc;
+          }
+
+          daysLeftCalc = Math.max(0, daysLeftCalc);
+          const pctRemaining = totalDays > 0 ? Math.min(100, Math.round((daysLeftCalc / totalDays) * 100)) : 0;
+
+          // Update CSS custom property without nuking other inline styles
+          gauge.style.setProperty('--pct', String(pctRemaining));
+
+          // Label
+          const lbl = gauge.querySelector('.radial__label');
+          if (lbl) {
+            if (expireRaw === '0' || expireTs === 0) {
+              lbl.innerHTML = '<b>∞</b><span>نامحدود</span>';
+            } else {
+              lbl.innerHTML = '<b>' + toFa(daysLeftCalc) + '</b><span>روز مانده</span>';
+            }
+          }
+        }
+        /* وضعیت توسط initDateAndStatus() مدیریت می‌شود */
+        // Ignore errors if 'active' is not defined
+        try {
+          const subUrl = '{{ .subUrl }}';
+          ensureAndMakeQR(subUrl);
+          const dl = document.getElementById('downloadCfg'); if (dl) { dl.href = subUrl; }
+          const note = document.getElementById('qrNote');
+          if (note) {
+            let accountName = '';
+            const firstConn = document.querySelector('#connectionsContent .connection-item .connection-text');
+            if (firstConn) {
+              const raw = (firstConn.textContent || '').trim();
+              accountName = extractDisplayName(raw);
+
+              accountName = __stripNameSymbols(accountName);
+            }
+            note.textContent = cleanName(accountName) || '{{ .sId }}';
+
+            const accEl = document.getElementById('expireValue');
+            if (accEl) accEl.textContent = (accountName || '{{ .sId }}');
+          }
+          const host = parseHostFromLink(subUrl);
+          const hostEl = document.getElementById('serverHost');
+          if (hostEl) { hostEl.textContent = host || '—'; hostEl.dataset.copy = host; }
+        } catch (e) { } // Ignore errors if subUrl or sId are not available
+
+      } catch (e) {
+      }
+    }
+
+    function afterInitUI() {
+      // Enhance UI with dynamic summaries
+      // Usage summary text
+      try {
+        let totalByte = parseInt('{{ .totalByte }}', 10);
+        let downloadByte = parseInt('{{ .downloadByte }}', 10);
+        let uploadByte = parseInt('{{ .uploadByte }}', 10);
+        if (isNaN(totalByte)) totalByte = 0;
+        if (isNaN(downloadByte)) downloadByte = 0;
+        if (isNaN(uploadByte)) uploadByte = 0;
+        const usedBytes = downloadByte + uploadByte;
+        const percent = totalByte === 0 ? 0 : Math.max(0, Math.min(100, Math.round((usedBytes / totalByte) * 100)));
+        const sumEl = document.getElementById('usageSummary');
+        if (sumEl) {
+          const totalTxt = (totalByte === 0 ? 'نامحدود' : formatBytes(totalByte));
+          if (totalByte > 0) {
+            sumEl.textContent = '٪' + toFa(percent) + ' از ' + toFa(totalTxt);
+          } else {
+            sumEl.textContent = 'نامحدود';
+          }
+        }
+      } catch (e) { } // Ignore errors if byte values are not available
+
+      // Expiry dataset attributes for visual ring that relies on data-left / data-total
+      try {
+        const expireRaw = '{{ .expire }}';
+        let expireTs = parseInt(expireRaw, 10);
+        if (!isNaN(expireTs) && expireTs > 0 && expireTs < 1e12) expireTs *= 1000; // Assume seconds if timestamp is small
+        const now = Date.now();
+        let daysLeft = Math.max(0, Math.ceil((expireTs - now) / (24 * 60 * 60 * 1000)));
+        console.log("afterInitUI - expireRaw:", expireRaw, "daysLeft:", daysLeft);
+        let totalDays = 30; // Default to 30 days for calculation
+        if (daysLeft > 30) totalDays = daysLeft;
+        const expirySection = document.getElementById('expiry');
+        if (expirySection) {
+          expirySection.dataset.left = String(daysLeft);
+          expirySection.dataset.total = String(totalDays);
+        }
+      } catch (e) { } // Ignore errors if expire data is not available
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      initUI();
+      afterInitUI();
+      const connectionItems = document.querySelectorAll('#connectionsContent .connection-item .connection-text');
+      connectionItems.forEach(item => {
+        const originalText = item.textContent;
+        item.textContent = trimRemark(originalText);
+        try { initDateAndStatus(); } catch (e) { }
+
+        try {
+          (function () {
+            const firstConn = document.querySelector('#connectionsContent .connection-item .connection-text');
+            let accountName = '';
+            if (firstConn) {
+              const raw = (firstConn.textContent || '').trim();
+              if (typeof extractDisplayName === 'function') {
+                accountName = extractDisplayName(raw);
+              } else {
+                accountName = raw;
+              }
+            }
+            if (typeof __stripNameSymbols === 'function') {
+              accountName = __stripNameSymbols(accountName);
+            }
+            const accEl = document.getElementById('expireValue');
+            if (accEl) accEl.textContent = (accountName || '{{ .sId }}');
+          })();
+        } catch (e) { }
+
+
+        try {
+          (function () {
+            const firstConn = document.querySelector('#connectionsContent .connection-item .connection-text');
+            let accountName = '';
+            if (firstConn) {
+              const raw = (firstConn.textContent || '').trim();
+              if (typeof extractDisplayName === 'function') accountName = extractDisplayName(raw);
+              else accountName = raw;
+            }
+            if (typeof __stripNameSymbols === 'function') accountName = __stripNameSymbols(accountName);
+            const accEl = document.getElementById('expireValue');
+            if (accEl) accEl.textContent = (accountName || '{{ .sId }}');
+          })();
+        } catch (e) { }
+
+
+        try {
+          (function () {
+            const expiryMeta = document.getElementById('expiryMeta');
+            if (!expiryMeta) return;
+            const raw = '{{ .expire }}';
+            let ts = parseInt(raw, 10);
+            if (!isNaN(ts) && ts > 0 && ts < 1e12) ts *= 1000;
+            const now = Date.now();
+            let daysLeft = 0, dateStr = '—';
+            if (raw === '0' || ts === 0) {
+              dateStr = 'نامحدود';
+              daysLeft = Infinity;
+            } else if (!isNaN(ts)) {
+              daysLeft = Math.max(0, Math.ceil((ts - now) / (24 * 60 * 60 * 1000)));
+              const d = new Date(ts);
+              const gy = d.getFullYear(), gm = d.getMonth() + 1, gd = d.getDate();
+              try {
+                const j = jalaali.toJalaali(gy, gm, gd);
+                dateStr = String(j.jy) + '/' + String(j.jm) + '/' + String(j.jd);
+              } catch (e) {
+                dateStr = String(gy) + '/' + String(gm) + '/' + String(gd);
+              }
+            }
+            // Build two mini stat-like cards
+            const dateCard = '<div class="stat-mini"><div class="stat-mini__value">' + dateStr + '</div></div>';
+            const daysCard = '<div class="stat-mini"><div class="stat-mini__value">' + (daysLeft === Infinity ? '∞' : toFa(daysLeft)) + (daysLeft === Infinity ? '' : ' روز مانده') + '</div></div>';
+            expiryMeta.innerHTML = dateCard + daysCard;
+          })();
+        } catch (e) { }
+
+      });
+    });
+
+    // Initialize date (expire) and computed status (active/inactive)
+    function initDateAndStatus() {
+      const expireValue = '{{ .expire }}';
+      const expireTimestamp = parseInt(expireValue, 10) * 1000;
+      const expireDateElement = document.getElementById('expireValue');
+      const statusElement = document.getElementById('statusValue');
+
+      // نمایش تاریخ انقضا (شمسی) یا نامحدود
+      try {
+        if (expireValue === '0') {
+          if (expireDateElement) expireDateElement.textContent = 'نامحدود';
+        } else {
+          const expireDate = new Date(expireTimestamp);
+          const gy = expireDate.getFullYear();
+          const gm = expireDate.getMonth() + 1;
+          const gd = expireDate.getDate();
+          const j = jalaali.toJalaali(gy, gm, gd);
+          if (expireDateElement) expireDateElement.textContent = `${j.jy}/${j.jm}/${j.jd}`;
+        }
+      } catch (e) {
+        // در صورت نبود کتابخانه جلالی، تاریخ میلادی را نشان بده
+        if (expireValue === '0') {
+          if (expireDateElement) expireDateElement.textContent = 'نامحدود';
+        } else if (!isNaN(expireTimestamp)) {
+          const d = new Date(expireTimestamp);
+          const y = d.getFullYear(), m = (d.getMonth() + 1), dd = d.getDate();
+          if (expireDateElement) expireDateElement.textContent = `${y}/${m}/${dd}`;
+        }
+      }
+
+      // محاسبه وضعیت بر اساس حجم و تاریخ انقضا
+      const totalByte = parseInt('{{ .totalByte }}', 10);
+      const downloadByte = parseInt('{{ .downloadByte }}', 10);
+      const uploadByte = parseInt('{{ .uploadByte }}', 10);
+      const usedBytes = (isNaN(downloadByte) ? 0 : downloadByte) + (isNaN(uploadByte) ? 0 : uploadByte);
+
+      let isActive = false;
+      if (totalByte === 0) {
+        // پلن نامحدود
+        isActive = (expireValue === '0') ? true : (expireTimestamp >= Date.now());
+      } else {
+        // پلن حجمی
+        isActive = (expireTimestamp >= Date.now()) && (usedBytes <= totalByte);
+      }
+
+      if (statusElement) {
+        statusElement.innerHTML = isActive
+          ? '<span class="pill"><span class="dot dot--ok"></span> فعال</span>'
+          : '<span class="pill"><span class="dot dot--bad"></span> غیرفعال</span>';
+      }
+    }
+
+  </script>
+
+  <!-- QR Zoom Modal -->
+  <div id="qrModal" class="qr-modal" hidden>
+    <div class="qr-modal__content">
+      <canvas id="qrcodeLarge" width="360" height="360" class="qr__img"></canvas>
+      <button id="qrClose" class="btn qr-modal__close" aria-label="بستن">بستن</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      try {
+        const small = document.getElementById('qrcode');
+        const modal = document.getElementById('qrModal');
+        const large = document.getElementById('qrcodeLarge');
+        const btnClose = document.getElementById('qrClose');
+        if (!small || !modal || !large) return;
+
+        function openQR() {
+          try {
+            const ctx = large.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            ctx.clearRect(0, 0, large.width, large.height);
+            // draw small canvas into large (scaled)
+            ctx.drawImage(small, 0, 0, large.width, large.height);
+          } catch (e) { }
+          modal.hidden = false;
+        }
+        function closeQR() { modal.hidden = true; }
+
+        small.addEventListener('click', openQR);
+        btnClose && btnClose.addEventListener('click', closeQR);
+        modal.addEventListener('click', function (e) { if (e.target === modal) closeQR(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeQR(); });
+      } catch (e) { }
+    });
+  </script>
+  <script>
+    const enableTelegram = false; // or true
+    document.querySelectorAll('.telegram-btn').forEach(btn => {
+      btn.style.display = enableTelegram ? 'flex' : 'none';
+    });
+  </script>
+</body>
+
+</html>
+<!--
+  This file is part of the TX-UI project.
+  For more information, visit: https://github.com/AghayeCoder/tx-ui
+  Designed by @mehrdadghadami
+-->
