@@ -14,6 +14,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/AghayeCoder/tx-themehub/master
 | Variable       | Description                                    |
 | -------------- | ---------------------------------------------- |
 | `result`       | Returns the URI for Vmess/Vless.               |
+| `emails`       | Returns array of client emails in sub.         |
 | `total`        | Returns the formatted total traffic.           |
 | `expire`       | End date as a timestamp.                       |
 | `upload`       | Returns the formatted uploaded traffic.        |
