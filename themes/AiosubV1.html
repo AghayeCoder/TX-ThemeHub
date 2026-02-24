@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usage Dashboard</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Font Awesome 7 -->
+  <link
+    rel="stylesheet"
+    href="https://site-assets.fontawesome.com/releases/v7.2.0/css/all.css"
+  />
+
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --bg-grad-a: #d7ecff;
+      --bg-grad-b: #e7f0ff;
+      --card: rgba(255, 255, 255, 0.84);
+      --text: #0f1f36;
+      --muted: #4f647f;
+      --border: rgba(15, 23, 42, 0.14);
+      --track: #d8e6f7;
+      --accent: #0ea5e9;
+      --accent-2: #3b82f6;
+      --shadow: 0 14px 34px rgba(15, 23, 42, 0.12);
+    }
+
+    html[data-theme="dark"] {
+      --bg: #0a1220;
+      --bg-grad-a: #11243e;
+      --bg-grad-b: #142842;
+      --card: rgba(15, 23, 42, 0.82);
+      --text: #e5edf7;
+      --muted: #a5b7cf;
+      --border: rgba(148, 163, 184, 0.2);
+      --track: #1b2f4d;
+      --accent: #38bdf8;
+      --accent-2: #60a5fa;
+      --shadow: 0 16px 38px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 0%, var(--bg-grad-a), transparent 42%),
+        radial-gradient(circle at 88% 6%, var(--bg-grad-b), transparent 48%),
+        var(--bg);
+      padding: 18px;
+    }
+
+    .app {
+      max-width: 980px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .top {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .sub-url-line {
+      margin: 6px 0 0;
+      font-size: 0.8125rem;
+      line-height: 1.45;
+      color: var(--muted);
+      max-width: 620px;
+      overflow-wrap: anywhere;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .actions .btn {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .actions .btn i {
+      font-size: 1rem;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.52);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 180ms ease, border-color 180ms ease;
+    }
+
+    html[data-theme="dark"] .btn {
+      background: rgba(15, 23, 42, 0.35);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .panel {
+      padding: 16px;
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .panel-time {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel-time::before {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      inset-inline-end: -110px;
+      top: -120px;
+      border-radius: 50%;
+      background: linear-gradient(140deg, rgba(14, 165, 233, 0.22), rgba(59, 130, 246, 0.14));
+      pointer-events: none;
+    }
+
+    .time-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .time-head h2 {
+      margin: 0;
+    }
+
+    .time-status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      line-height: 1;
+      min-height: 30px;
+      padding: 0 10px;
+      white-space: nowrap;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    html[data-theme="dark"] .time-status {
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    .time-status.is-active {
+      color: #0f6b35;
+      border-color: rgba(22, 163, 74, 0.45);
+      background: rgba(34, 197, 94, 0.12);
+    }
+
+    html[data-theme="dark"] .time-status.is-active {
+      color: #39ff7a;
+      border-color: rgba(57, 255, 122, 0.7);
+      background: rgba(57, 255, 122, 0.08);
+      text-shadow: 0 0 10px rgba(57, 255, 122, 0.65);
+      box-shadow:
+        inset 0 0 0 1px rgba(57, 255, 122, 0.25),
+        0 0 14px rgba(57, 255, 122, 0.3);
+    }
+
+    .time-status.is-expired {
+      color: #b91c1c;
+      border-color: rgba(239, 68, 68, 0.65);
+      background: rgba(239, 68, 68, 0.1);
+      text-shadow: 0 0 8px rgba(239, 68, 68, 0.35);
+      box-shadow:
+        inset 0 0 0 1px rgba(239, 68, 68, 0.2),
+        0 0 12px rgba(239, 68, 68, 0.2);
+    }
+
+    html[data-theme="dark"] .time-status.is-expired {
+      color: #ff5a5a;
+      border-color: rgba(255, 90, 90, 0.75);
+      background: rgba(255, 90, 90, 0.1);
+      text-shadow: 0 0 10px rgba(255, 90, 90, 0.7);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 90, 90, 0.25),
+        0 0 14px rgba(255, 90, 90, 0.35);
+    }
+
+    .time-main {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .time-box {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 10px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.48);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .time-box::before {
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      top: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      opacity: 0.8;
+    }
+
+    html[data-theme="dark"] .time-box {
+      background: rgba(15, 23, 42, 0.26);
+    }
+
+    .time-num {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+    }
+
+    .time-lbl {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
+
+    .time-expiry {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      margin-top: 4px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.34));
+      overflow: hidden;
+    }
+
+    html[data-theme="dark"] .time-expiry {
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.44), rgba(15, 23, 42, 0.26));
+    }
+
+    .time-expiry::before {
+      content: "";
+      position: absolute;
+      inset-inline-start: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      opacity: 0.9;
+    }
+
+    .time-expiry i {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      color: var(--accent);
+      font-size: 0.9rem;
+      background: rgba(14, 165, 233, 0.14);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      flex-shrink: 0;
+    }
+
+    .time-expiry .meta {
+      margin: 0;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+
+    .meta {
+      margin-top: 14px;
+      font-size: 0.875rem;
+      line-height: 1.45;
+      color: var(--muted);
+      word-break: break-word;
+    }
+
+    .data-wrap {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .donut {
+      --percent: 0;
+      width: 168px;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      background: conic-gradient(var(--donut-color, var(--accent)) calc(var(--percent) * 1%), var(--track) 0);
+      display: grid;
+      place-items: center;
+      position: relative;
+      margin-inline: auto;
+    }
+
+    .donut::before {
+      content: "";
+      position: absolute;
+      width: 68%;
+      height: 68%;
+      border-radius: 50%;
+      background: var(--card);
+      border: 1px solid var(--border);
+    }
+
+    .donut-center {
+      position: relative;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .donut-value {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .donut-label {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
+
+    .stat-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: 0.9375rem;
+      line-height: 1.45;
+    }
+
+    .stat-name {
+      color: var(--muted);
+    }
+
+    .apps {
+      padding: 16px;
+    }
+
+    .apps h2 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .apps-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+
+    .os-accordion {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.42);
+      padding: 0;
+      display: grid;
+      gap: 0;
+      align-self: start;
+      overflow: hidden;
+    }
+
+    html[data-theme="dark"] .os-accordion {
+      background: rgba(15, 23, 42, 0.25);
+    }
+
+    .os-accordion[open] {
+      border-color: rgba(14, 165, 233, 0.38);
+    }
+
+    .os-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.9375rem;
+      line-height: 1.2;
+      min-height: 40px;
+      padding: 8px 12px;
+      margin: 0;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .os-head::-webkit-details-marker {
+      display: none;
+    }
+
+    .os-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .os-label i {
+      font-size: 1rem;
+    }
+
+    .os-chevron {
+      color: var(--muted);
+      font-size: 0.875rem;
+      transition: transform 180ms ease;
+    }
+
+    .os-accordion[open] .os-chevron {
+      transform: rotate(180deg);
+    }
+
+    .os-links {
+      display: grid;
+      gap: 7px;
+      padding: 0 12px 12px;
+    }
+
+    .os-link {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 8px 9px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.875rem;
+      line-height: 1.4;
+      background: rgba(255, 255, 255, 0.38);
+      transition: border-color 180ms ease, transform 180ms ease;
+    }
+
+    html[data-theme="dark"] .os-link {
+      background: rgba(15, 23, 42, 0.35);
+    }
+
+    .os-link:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .os-link i {
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 16px;
+      background: rgba(2, 6, 23, 0.55);
+      z-index: 50;
+    }
+
+    .modal.show {
+      display: grid;
+    }
+
+    .modal-card {
+      width: min(360px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .icon-btn {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.5);
+      color: var(--text);
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+    }
+
+    html[data-theme="dark"] .icon-btn {
+      background: rgba(15, 23, 42, 0.35);
+    }
+
+    .qr-img {
+      width: 100%;
+      max-width: 280px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: block;
+      margin: 0 auto;
+      background: #fff;
+    }
+
+    .toast {
+      position: fixed;
+      inset-inline-end: 16px;
+      bottom: 16px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 200ms ease, transform 200ms ease;
+      z-index: 60;
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 820px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .data-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .apps-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .top {
+        padding: 14px;
+      }
+
+      .panel {
+        padding: 14px;
+      }
+
+      .apps {
+        padding: 14px;
+      }
+
+      .apps-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="card top">
+      <div>
+        <h1 id="title" class="title"></h1>
+        <p id="clientEmailLine" class="sub-url-line"></p>
+        <p id="subUrlLine" class="sub-url-line"></p>
+      </div>
+      <div class="actions">
+        <button id="themeBtn" class="btn" type="button">
+          <i id="themeIcon" class="fa-regular fa-sun"></i>
+        </button>
+        <button id="langBtn" class="btn" type="button">
+          <i class="fa-regular fa-language"></i>
+        </button>
+        <button id="copyBtn" class="btn" type="button">
+          <i class="fa-regular fa-copy"></i>
+        </button>
+        <button id="qrBtn" class="btn" type="button">
+          <i class="fa-regular fa-qrcode"></i>
+        </button>
+      </div>
+    </header>
+
+    <section class="grid">
+      <article class="card panel panel-time">
+        <div class="time-head">
+          <h2 id="timeChartTitle"></h2>
+          <span id="timeStatus" class="time-status"></span>
+        </div>
+        <div class="time-main">
+          <div class="time-box">
+            <p id="dayNum" class="time-num">0</p>
+            <p id="dayLbl" class="time-lbl"></p>
+          </div>
+          <div class="time-box">
+            <p id="hourNum" class="time-num">0</p>
+            <p id="hourLbl" class="time-lbl"></p>
+          </div>
+          <div class="time-box">
+            <p id="minNum" class="time-num">0</p>
+            <p id="minLbl" class="time-lbl"></p>
+          </div>
+        </div>
+        <div class="time-expiry">
+          <i class="fa-regular fa-calendar-clock" aria-hidden="true"></i>
+          <p id="expiryLine" class="meta"></p>
+        </div>
+      </article>
+
+      <article class="card panel">
+        <h2 id="dataChartTitle"></h2>
+        <div class="data-wrap">
+          <div id="dataDonut" class="donut" style="--percent: 0;">
+            <div class="donut-center">
+              <p id="usagePercent" class="donut-value">0%</p>
+              <p id="usagePercentLbl" class="donut-label"></p>
+            </div>
+          </div>
+          <ul class="stat-list">
+            <li class="stat-item">
+              <span id="usedLbl" class="stat-name"></span>
+              <strong id="usedVal">0 GB</strong>
+            </li>
+            <li class="stat-item">
+              <span id="remainLbl" class="stat-name"></span>
+              <strong id="remainVal">0 GB</strong>
+            </li>
+            <li class="stat-item">
+              <span id="totalLbl" class="stat-name"></span>
+              <strong id="totalVal">0 GB</strong>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <section class="card apps">
+      <h2 id="appsTitle"></h2>
+      <div id="appsGrid" class="apps-grid"></div>
+    </section>
+  </main>
+
+  <section id="qrModal" class="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="qrTitle">
+      <div class="modal-head">
+        <h3 id="qrTitle" class="modal-title"></h3>
+        <button id="closeQrBtn" class="icon-btn" type="button" aria-label="Close">
+          <i class="fa-regular fa-xmark"></i>
+        </button>
+      </div>
+      <img id="qrImage" class="qr-img" alt="Subscription QR">
+      <p id="qrLinkText" class="meta"></p>
+    </div>
+  </section>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const templateVars = {
+      result: "{{ .result }}",
+      emails: "{{ .emails }}",
+      total: "{{ .total }}",
+      expire: "{{ .expire }}",
+      upload: "{{ .upload }}",
+      download: "{{ .download }}",
+      totalByte: "{{ .totalByte }}",
+      uploadByte: "{{ .uploadByte }}",
+      downloadByte: "{{ .downloadByte }}",
+      sId: "{{ .sId }}",
+      subUrl: "{{ .subUrl }}",
+      jsonUrl: "{{ .jsonUrl }}"
+    };
+
+    const BYTES_IN_GB = 1024 * 1024 * 1024;
+
+    function isTemplatePlaceholder(value) {
+      return typeof value === "string" && value.indexOf("{{") !== -1 && value.indexOf("}}") !== -1;
+    }
+
+    function normalizeTemplateValue(value, fallbackValue) {
+      if (value === null || value === undefined) return fallbackValue;
+      const text = String(value).trim();
+      if (!text || isTemplatePlaceholder(text)) return fallbackValue;
+      return text;
+    }
+
+    function normalizeEasternDigits(value) {
+      const faDigits = "\u06f0\u06f1\u06f2\u06f3\u06f4\u06f5\u06f6\u06f7\u06f8\u06f9";
+      const arDigits = "\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669";
+      return String(value || "")
+        .replace(/[\u06f0-\u06f9]/g, function (char) {
+          return String(faDigits.indexOf(char));
+        })
+        .replace(/[\u0660-\u0669]/g, function (char) {
+          return String(arDigits.indexOf(char));
+        });
+    }
+
+    function parseOptionalNumber(value) {
+      const text = normalizeTemplateValue(value, "");
+      if (!text) return null;
+      const normalized = normalizeEasternDigits(text)
+        .replace(/[\u066c,]/g, "")
+        .replace(/\u066b/g, ".")
+        .replace(/\s+/g, "")
+        .trim();
+      const numberValue = Number(normalized);
+      return Number.isFinite(numberValue) ? numberValue : null;
+    }
+
+    function isUnlimitedText(value) {
+      return /unlimited|infinite|\u221e|\u0646\u0627\u0645\u062d\u062f\u0648\u062f/i.test(String(value || ""));
+    }
+
+    function parseTrafficToBytes(value) {
+      const text = normalizeTemplateValue(value, "");
+      if (!text) return null;
+      if (isUnlimitedText(text)) return 0;
+
+      const normalized = normalizeEasternDigits(text)
+        .toLowerCase()
+        .replace(/(\d)[\u066b,.](\d)/g, "$1.$2")
+        .replace(/[\u066c,](?=\d{3}\b)/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+      const numberMatch = normalized.match(/-?\d+(?:\.\d+)?/);
+      if (!numberMatch) return null;
+
+      const amount = Number(numberMatch[0]);
+      if (!Number.isFinite(amount)) return null;
+
+      let multiplier = 1;
+      if (/tb|tib|terabyte|terabytes|\u062a\u0631\u0627\u0628\u0627\u06cc\u062a/.test(normalized)) {
+        multiplier = 1024 * 1024 * 1024 * 1024;
+      } else if (/gb|gib|gigabyte|gigabytes|\u06af\u06cc\u06af\u0627\u0628\u0627\u06cc\u062a/.test(normalized)) {
+        multiplier = BYTES_IN_GB;
+      } else if (/mb|mib|megabyte|megabytes|\u0645\u06af\u0627\u0628\u0627\u06cc\u062a/.test(normalized)) {
+        multiplier = 1024 * 1024;
+      } else if (/kb|kib|kilobyte|kilobytes|\u06a9\u06cc\u0644\u0648\u0628\u0627\u06cc\u062a/.test(normalized)) {
+        multiplier = 1024;
+      } else if (/byte|bytes|\u0628\u0627\u06cc\u062a/.test(normalized)) {
+        multiplier = 1;
+      }
+
+      return amount * multiplier;
+    }
+
+    function parseExpireToIso(value) {
+      const ts = parseOptionalNumber(value);
+      if (ts === null) return null;
+      const ms = ts < 1000000000000 ? ts * 1000 : ts;
+      const date = new Date(ms);
+      if (Number.isNaN(date.getTime())) return null;
+      return date.toISOString();
+    }
+
+    function parseEmails(value) {
+      const text = normalizeTemplateValue(value, "");
+      if (!text) return [];
+      if (text[0] === "[" && text[text.length - 1] === "]") {
+        try {
+          const parsed = JSON.parse(text);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (err) {
+          return text
+            .slice(1, -1)
+            .split(/[,\s]+/)
+            .map(function (item) { return item.trim(); })
+            .filter(Boolean);
+        }
+      }
+      return text
+        .split(/[,\s]+/)
+        .map(function (item) { return item.trim(); })
+        .filter(Boolean);
+    }
+
+    function pickFirstValue(values, fallbackValue) {
+      for (let i = 0; i < values.length; i += 1) {
+        const resolved = normalizeTemplateValue(values[i], "");
+        if (resolved) return resolved;
+      }
+      return fallbackValue;
+    }
+
+    function buildUsageModel() {
+      const totalByteRaw = parseOptionalNumber(templateVars.totalByte);
+      const uploadByteRaw = parseOptionalNumber(templateVars.uploadByte);
+      const downloadByteRaw = parseOptionalNumber(templateVars.downloadByte);
+
+      const uploadByte = uploadByteRaw !== null ? uploadByteRaw : parseTrafficToBytes(templateVars.upload);
+      const downloadByte = downloadByteRaw !== null ? downloadByteRaw : parseTrafficToBytes(templateVars.download);
+      const totalByte = totalByteRaw !== null ? totalByteRaw : parseTrafficToBytes(templateVars.total);
+
+      const hasUsageByteData = uploadByte !== null || downloadByte !== null;
+      const usedByte = Math.max(0, (uploadByte || 0) + (downloadByte || 0));
+      const parsedExpireIso = parseExpireToIso(templateVars.expire);
+
+      const subscriptionLink = pickFirstValue(
+        [templateVars.subUrl, templateVars.result, templateVars.jsonUrl],
+        ""
+      );
+
+      const formattedTotal = normalizeTemplateValue(templateVars.total, "");
+      const unlimitedFromByte = totalByte !== null && totalByte <= 0;
+      const unlimitedFromText = isUnlimitedText(formattedTotal);
+      const isUnlimited = unlimitedFromByte || unlimitedFromText;
+
+      return {
+        cycleStart: null,
+        cycleEnd: parsedExpireIso,
+        dataUsedGb: hasUsageByteData ? usedByte / BYTES_IN_GB : 0,
+        dataCapGb: totalByte !== null && totalByte > 0 ? totalByte / BYTES_IN_GB : 0,
+        isUnlimited: isUnlimited,
+        subscriptionLink: subscriptionLink,
+        resultUri: normalizeTemplateValue(templateVars.result, subscriptionLink),
+        subUrl: normalizeTemplateValue(templateVars.subUrl, ""),
+        jsonUrl: normalizeTemplateValue(templateVars.jsonUrl, ""),
+        subId: normalizeTemplateValue(templateVars.sId, ""),
+        emails: parseEmails(templateVars.emails),
+        totalByte: totalByte,
+        uploadByte: uploadByte,
+        downloadByte: downloadByte,
+        formattedTotal: formattedTotal,
+        formattedUpload: normalizeTemplateValue(templateVars.upload, ""),
+        formattedDownload: normalizeTemplateValue(templateVars.download, "")
+      };
+    }
+
+    const usageModel = buildUsageModel();
+
+    const appDownloads = [
+      {
+        key: "android",
+        icon: "fa-brands fa-android",
+        apps: [
+          { name: "v2rayNG", href: "https://github.com/2dust/v2rayNG/releases/latest" },
+          { name: "Happ", href: "https://play.google.com/store/search?q=happ%20proxy&c=apps" }
+        ]
+      },
+      {
+        key: "ios",
+        icon: "fa-brands fa-apple",
+        apps: [
+          { name: "Streisand", href: "https://apps.apple.com/us/search?term=streisand" },
+          { name: "Happ", href: "https://apps.apple.com/us/search?term=happ%20proxy" },
+          { name: "Shadowrocket", href: "https://apps.apple.com/us/search?term=shadowrocket" }
+        ]
+      },
+      {
+        key: "windows",
+        icon: "fa-brands fa-windows",
+        apps: [
+          { name: "v2rayNG", href: "https://github.com/2dust/v2rayN/releases/latest" },
+          { name: "Happ", href: "https://happ.app/" }
+        ]
+      },
+      {
+        key: "macos",
+        icon: "fa-brands fa-apple",
+        apps: [
+          { name: "V2rayU", href: "https://github.com/yanue/V2rayU/releases/latest" },
+          { name: "Happ", href: "https://happ.app/" }
+        ]
+      }
+    ];
+
+    const i18n = {
+      fa: {
+        title: "پنل اشتراک",
+        timeChartTitle: "زمان باقی مانده",
+        dataChartTitle: "نمودار مصرف دیتا",
+        appsTitle: "دانلود اپلیکیشن‌ها",
+        days: "روز",
+        hours: "ساعت",
+        minutes: "دقیقه",
+        android: "اندروید",
+        ios: "iOS",
+        windows: "ویندوز",
+        macos: "macOS",
+        linux: "لینوکس",
+        downloadApp: "دانلود",
+        used: "مصرف شده",
+        remaining: "باقی مانده",
+        total: "کل حجم",
+        usedPercent: "مصرف شده",
+        expiry: "پایان اشتراک",
+        themeDark: "حالت تیره",
+        themeLight: "حالت روشن",
+        switchEnglish: "English",
+        timeExpired: "اشتراک به پایان رسیده است",
+        timeUnlimited: "اشتراک شما نامحدود است",
+        timeStatusActive: "فعال",
+        timeStatusSoon: "رو به پایان",
+        timeStatusExpired: "منقضی",
+        copyLink: "کپی لینک اشتراک",
+        copyDone: "لینک اشتراک کپی شد",
+        copyFail: "کپی انجام نشد",
+        showQr: "نمایش QR",
+        qrTitle: "QR لینک اشتراک",
+        closeQr: "بستن",
+        linkLabel: "لینک اشتراک",
+        emailLabel: "ایمیل"
+      },
+      en: {
+        title: "V2Ray Subscription Usage",
+        timeChartTitle: "Time Remaining",
+        dataChartTitle: "Data Usage Chart",
+        appsTitle: "Download Apps",
+        days: "Days",
+        hours: "Hours",
+        minutes: "Minutes",
+        android: "Android",
+        ios: "iOS",
+        windows: "Windows",
+        macos: "macOS",
+        linux: "Linux",
+        downloadApp: "Download",
+        used: "Used",
+        remaining: "Remaining",
+        total: "Total Data",
+        usedPercent: "Usage",
+        expiry: "Expiry",
+        themeDark: "Dark Mode",
+        themeLight: "Light Mode",
+        switchEnglish: "فارسی",
+        timeExpired: "Subscription has expired",
+        timeUnlimited: "Your subscription is unlimited",
+        timeStatusActive: "Active",
+        timeStatusSoon: "Ending Soon",
+        timeStatusExpired: "Expired",
+        copyLink: "Copy Subscription",
+        copyDone: "Subscription link copied",
+        copyFail: "Copy failed",
+        showQr: "Show QR",
+        qrTitle: "Subscription QR",
+        closeQr: "Close",
+        linkLabel: "Subscription Link",
+        emailLabel: "Email"
+      }
+    };
+
+    // Force explicit active/inactive wording for status badge.
+    i18n.fa.timeStatusActive = "فعال";
+    i18n.fa.timeStatusExpired = "غیرفعال";
+    i18n.en.timeStatusActive = "Active";
+    i18n.en.timeStatusExpired = "Inactive";
+
+    const state = {
+      lang: localStorage.getItem("v2ray_lang") || "fa",
+      dark: true,
+      toastTimer: null
+    };
+
+    function clampPercent(value, total) {
+      if (!total || total <= 0) return 0;
+      return Math.max(0, Math.min(100, (value / total) * 100));
+    }
+
+    function getRemaining(cycleEndISO) {
+      if (!cycleEndISO) {
+        return { diff: 0, days: 0, hours: 0, minutes: 0, hasEnd: false };
+      }
+      const now = Date.now();
+      const end = new Date(cycleEndISO).getTime();
+      if (Number.isNaN(end)) {
+        return { diff: 0, days: 0, hours: 0, minutes: 0, hasEnd: false };
+      }
+      const diff = Math.max(0, end - now);
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      return { diff, days, hours, minutes, hasEnd: true };
+    }
+
+    function formatNumber(value, digits) {
+      const locale = state.lang === "fa" ? "fa-IR" : "en-US";
+      return new Intl.NumberFormat(locale, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: digits
+      }).format(value);
+    }
+
+    function formatDate(dateISO) {
+      const locale = state.lang === "fa" ? "fa-IR" : "en-US";
+      return new Date(dateISO).toLocaleString(locale, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(state.toastTimer);
+      state.toastTimer = setTimeout(function () {
+        toast.classList.remove("show");
+      }, 1700);
+    }
+
+    function applyTheme() {
+      document.documentElement.setAttribute("data-theme", state.dark ? "dark" : "light");
+      localStorage.setItem("v2ray_theme", state.dark ? "dark" : "light");
+    }
+
+    function applyLanguage() {
+      const t = i18n[state.lang];
+      const isFa = state.lang === "fa";
+      const listSeparator = isFa ? " ، " : ", ";
+      document.documentElement.lang = isFa ? "fa" : "en";
+      document.documentElement.dir = isFa ? "rtl" : "ltr";
+      localStorage.setItem("v2ray_lang", state.lang);
+
+      document.getElementById("title").textContent = t.title;
+      document.getElementById("timeChartTitle").textContent = t.timeChartTitle;
+      document.getElementById("dataChartTitle").textContent = t.dataChartTitle;
+      document.getElementById("appsTitle").textContent = t.appsTitle;
+      document.getElementById("dayLbl").textContent = t.days;
+      document.getElementById("hourLbl").textContent = t.hours;
+      document.getElementById("minLbl").textContent = t.minutes;
+      document.getElementById("usagePercentLbl").textContent = t.usedPercent;
+      document.getElementById("usedLbl").textContent = t.used;
+      document.getElementById("remainLbl").textContent = t.remaining;
+      document.getElementById("totalLbl").textContent = t.total;
+
+      const themeActionLabel = state.dark ? t.themeLight : t.themeDark;
+      document.getElementById("themeBtn").setAttribute("title", themeActionLabel);
+      document.getElementById("themeBtn").setAttribute("aria-label", themeActionLabel);
+      document.getElementById("themeIcon").className = state.dark ? "fa-regular fa-sun" : "fa-regular fa-moon";
+      document.getElementById("langBtn").setAttribute("title", t.switchEnglish);
+      document.getElementById("langBtn").setAttribute("aria-label", t.switchEnglish);
+      document.getElementById("copyBtn").setAttribute("title", t.copyLink);
+      document.getElementById("copyBtn").setAttribute("aria-label", t.copyLink);
+      document.getElementById("qrBtn").setAttribute("title", t.showQr);
+      document.getElementById("qrBtn").setAttribute("aria-label", t.showQr);
+      document.getElementById("copyBtn").disabled = !usageModel.subscriptionLink;
+      document.getElementById("qrBtn").disabled = !usageModel.subscriptionLink;
+
+      document.getElementById("qrTitle").textContent = t.qrTitle;
+      document.getElementById("qrLinkText").textContent = t.linkLabel + ": " + usageModel.subscriptionLink;
+      document.getElementById("closeQrBtn").setAttribute("aria-label", t.closeQr);
+
+      const subUrlLineEl = document.getElementById("subUrlLine");
+      const clientEmailLineEl = document.getElementById("clientEmailLine");
+      if (usageModel.emails && usageModel.emails.length > 0) {
+        clientEmailLineEl.style.display = "block";
+        clientEmailLineEl.textContent = t.emailLabel + ": " + usageModel.emails.join(listSeparator);
+      } else {
+        clientEmailLineEl.style.display = "none";
+      }
+      subUrlLineEl.style.display = "none";
+    }
+
+    function renderApps() {
+      const t = i18n[state.lang];
+      const appNames = {
+        android: t.android,
+        ios: t.ios,
+        windows: t.windows,
+        macos: t.macos
+      };
+      const grid = document.getElementById("appsGrid");
+      grid.innerHTML = "";
+
+      appDownloads.forEach(function (os) {
+        const links = os.apps
+          .map(function (client) {
+            return (
+              '<a class="os-link" href="' + client.href + '" target="_blank" rel="noopener noreferrer">' +
+              "<span>" + client.name + "</span>" +
+              '<i class="fa-regular fa-arrow-up-right-from-square" aria-hidden="true"></i>' +
+              "</a>"
+            );
+          })
+          .join("");
+
+        const accordion = document.createElement("details");
+        accordion.className = "os-accordion";
+        accordion.innerHTML =
+          '<summary class="os-head">' +
+          '<span class="os-label">' +
+          '<i class="' + os.icon + '" aria-hidden="true"></i>' +
+          "<strong>" + appNames[os.key] + "</strong>" +
+          "</span>" +
+          '<i class="fa-regular fa-chevron-down os-chevron" aria-hidden="true"></i>' +
+          "</summary>" +
+          '<div class="os-links">' + links + "</div>";
+        grid.appendChild(accordion);
+      });
+
+      const accordions = grid.querySelectorAll(".os-accordion");
+      accordions.forEach(function (item) {
+        item.addEventListener("toggle", function () {
+          if (!item.open) return;
+          accordions.forEach(function (other) {
+            if (other !== item) other.open = false;
+          });
+        });
+      });
+    }
+
+    function renderTime() {
+      const t = i18n[state.lang];
+      const remain = getRemaining(usageModel.cycleEnd);
+      const timeStatus = document.getElementById("timeStatus");
+      document.getElementById("dayNum").textContent = formatNumber(remain.days, 0);
+      document.getElementById("hourNum").textContent = formatNumber(remain.hours, 0);
+      document.getElementById("minNum").textContent = formatNumber(remain.minutes, 0);
+      const isUnlimitedUser = usageModel.isUnlimited === true;
+
+      if (isUnlimitedUser) {
+        timeStatus.textContent = t.timeStatusActive;
+        timeStatus.className = "time-status is-active";
+        document.getElementById("expiryLine").textContent = t.timeUnlimited;
+        return;
+      }
+
+      if (!remain.hasEnd) {
+        timeStatus.textContent = t.timeStatusExpired;
+        timeStatus.className = "time-status is-expired";
+        document.getElementById("expiryLine").textContent = t.expiry + ": --";
+        return;
+      }
+
+      if (remain.diff === 0) {
+        timeStatus.textContent = t.timeStatusExpired;
+        timeStatus.className = "time-status is-expired";
+      } else {
+        timeStatus.textContent = t.timeStatusActive;
+        timeStatus.className = "time-status is-active";
+      }
+
+      const expiryLabel = remain.diff === 0 ? t.timeExpired : t.expiry + ": " + formatDate(usageModel.cycleEnd);
+      document.getElementById("expiryLine").textContent = expiryLabel;
+    }
+
+    function renderData() {
+      const used = usageModel.dataUsedGb;
+      const cap = usageModel.dataCapGb;
+      const dataUnit = state.lang === "fa" ? "گیگابایت" : "GB";
+      const unlimitedLabel = state.lang === "fa" ? "نامحدود" : "Unlimited";
+      const unlimited = usageModel.isUnlimited === true || !Number.isFinite(cap) || cap <= 0;
+      const donut = document.getElementById("dataDonut");
+      const usagePercentEl = document.getElementById("usagePercent");
+      const usagePercentLblEl = document.getElementById("usagePercentLbl");
+      const infinity = "\u221E";
+
+      if (unlimited) {
+        donut.style.setProperty("--percent", "100");
+        donut.style.setProperty("--donut-color", "#a855f7");
+        usagePercentEl.textContent = infinity;
+        usagePercentLblEl.textContent = unlimitedLabel;
+        document.getElementById("usedVal").textContent = formatNumber(used, 1) + " " + dataUnit;
+        document.getElementById("remainVal").textContent = infinity + " " + dataUnit;
+        document.getElementById("totalVal").textContent = infinity + " " + dataUnit;
+        return;
+      }
+
+      const remain = Math.max(0, cap - used);
+      const usedPct = clampPercent(used, cap);
+      let donutColor = "#16a34a";
+      if (usedPct >= 80) {
+        donutColor = "#ef4444";
+      } else if (usedPct >= 50) {
+        donutColor = "#eab308";
+      }
+
+      donut.style.setProperty("--percent", usedPct.toFixed(2));
+      donut.style.setProperty("--donut-color", donutColor);
+      usagePercentEl.textContent = formatNumber(usedPct, 1) + "%";
+      usagePercentLblEl.textContent = i18n[state.lang].usedPercent;
+      document.getElementById("usedVal").textContent = formatNumber(used, 1) + " " + dataUnit;
+      document.getElementById("remainVal").textContent = formatNumber(remain, 1) + " " + dataUnit;
+      document.getElementById("totalVal").textContent = formatNumber(cap, 1) + " " + dataUnit;
+    }
+
+    function getQrImageUrl(text) {
+      return "https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data=" + encodeURIComponent(text);
+    }
+
+    function openQrModal() {
+      if (!usageModel.subscriptionLink) return;
+      document.getElementById("qrImage").src = getQrImageUrl(usageModel.subscriptionLink);
+      document.getElementById("qrModal").classList.add("show");
+      document.getElementById("qrModal").setAttribute("aria-hidden", "false");
+    }
+
+    function closeQrModal() {
+      document.getElementById("qrModal").classList.remove("show");
+      document.getElementById("qrModal").setAttribute("aria-hidden", "true");
+    }
+
+    function copyTextFallback(text) {
+      const input = document.createElement("textarea");
+      input.value = text;
+      input.setAttribute("readonly", "");
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+      input.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(input);
+      return ok;
+    }
+
+    async function copySubscriptionLink() {
+      const t = i18n[state.lang];
+      if (!usageModel.subscriptionLink) {
+        showToast(t.copyFail);
+        return;
+      }
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(usageModel.subscriptionLink);
+        } else {
+          const ok = copyTextFallback(usageModel.subscriptionLink);
+          if (!ok) throw new Error("fallback copy failed");
+        }
+        showToast(t.copyDone);
+      } catch (err) {
+        showToast(t.copyFail);
+      }
+    }
+
+    function renderAll() {
+      applyTheme();
+      applyLanguage();
+      renderApps();
+      renderTime();
+      renderData();
+    }
+
+    document.getElementById("themeBtn").addEventListener("click", function () {
+      state.dark = !state.dark;
+      renderAll();
+    });
+
+    document.getElementById("langBtn").addEventListener("click", function () {
+      state.lang = state.lang === "fa" ? "en" : "fa";
+      renderAll();
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", copySubscriptionLink);
+    document.getElementById("qrBtn").addEventListener("click", openQrModal);
+    document.getElementById("closeQrBtn").addEventListener("click", closeQrModal);
+    document.getElementById("qrModal").addEventListener("click", function (event) {
+      if (event.target.id === "qrModal") closeQrModal();
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") closeQrModal();
+    });
+
+    renderAll();
+    setInterval(renderTime, 30000);
+  </script>
+</body>
+</html>
