@@ -309,6 +309,109 @@
             background: rgba(148, 163, 184, .2);
             border-radius: 4px;
         }
+
+        /* ── Theme toggle button ── */
+        #theme-toggle {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 100;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all .3s;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(148, 163, 184, .2);
+            backdrop-filter: blur(12px);
+            color: #f1f5f9;
+        }
+        #theme-toggle:hover {
+            background: rgba(15, 23, 42, 0.9);
+            transform: scale(1.1);
+        }
+
+        /* ── Light theme overrides ── */
+        body.light {
+            background: #f0f4ff;
+            color: #1e293b;
+        }
+        body.light #theme-toggle {
+            background: rgba(255,255,255,0.85);
+            border-color: rgba(100,116,139,.25);
+            color: #1e293b;
+        }
+        body.light #theme-toggle:hover {
+            background: rgba(255,255,255,0.95);
+        }
+        body.light .aurora-bg::before {
+            opacity: 0.10;
+        }
+        body.light .aurora-bg::after {
+            opacity: 0.10;
+        }
+        body.light .aurora-blob {
+            opacity: 0.08;
+        }
+        body.light .glass {
+            background: rgba(255, 255, 255, 0.75);
+            border-color: rgba(100, 116, 139, 0.18);
+        }
+        body.light .glow-border {
+            box-shadow: 0 0 0 1px rgba(139,92,246,.2), 0 2px 16px rgba(14,165,233,.07);
+        }
+        body.light .glow-border:hover {
+            box-shadow: 0 0 0 1px rgba(139,92,246,.45), 0 4px 24px rgba(14,165,233,.12);
+        }
+        /* text overrides */
+        body.light .text-slate-400 { color: #475569 !important; }
+        body.light .text-slate-500 { color: #64748b !important; }
+        body.light .text-slate-600 { color: #475569 !important; }
+        body.light .text-slate-100 { color: #0f172a !important; }
+        body.light h1, body.light h2 { color: #0f172a; }
+        body.light .ring-track { stroke: rgba(100,116,139,0.2); }
+        /* config item */
+        body.light .config-item {
+            background: rgba(241,245,249,0.9);
+            border-color: rgba(100,116,139,.18);
+        }
+        body.light .config-text { color: #475569; }
+        body.light .copy-btn { color: #64748b; }
+        body.light .copy-btn:hover { color: #0f172a; }
+        /* subUrl text */
+        body.light #subUrlText { color: #64748b; }
+        /* app buttons */
+        body.light .app-btn {
+            color: #ffffff;
+            border-color: transparent;
+        }
+        body.light .app-btn-v2ray {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            box-shadow: 0 2px 12px rgba(37,99,235,.35);
+        }
+        body.light .app-btn-v2ray:hover {
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+            box-shadow: 0 4px 18px rgba(37,99,235,.45);
+        }
+        body.light .app-btn-streak {
+            background: linear-gradient(135deg, #6d28d9, #7c3aed);
+            box-shadow: 0 2px 12px rgba(109,40,217,.35);
+        }
+        body.light .app-btn-streak:hover {
+            background: linear-gradient(135deg, #5b21b6, #6d28d9);
+            box-shadow: 0 4px 18px rgba(109,40,217,.45);
+        }
+        body.light .app-btn-v2box {
+            background: linear-gradient(135deg, #047857, #059669);
+            box-shadow: 0 2px 12px rgba(5,150,105,.35);
+        }
+        body.light .app-btn-v2box:hover {
+            background: linear-gradient(135deg, #065f46, #047857);
+            box-shadow: 0 4px 18px rgba(5,150,105,.45);
+        }
     </style>
 </head>
 
@@ -318,6 +421,18 @@
     <div class="aurora-bg">
         <div class="aurora-blob"></div>
     </div>
+
+    <!-- Theme toggle -->
+    <button id="theme-toggle" onclick="toggleTheme()" aria-label="تغییر تم">
+        <svg id="icon-moon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+        <svg id="icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364 6.364l-1.414-1.414M6.05 6.05L4.636 4.636m12.728 0L18.364 4.636M6.05 17.95l-1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+        </svg>
+    </button>
 
     <div class="relative z-10 min-h-screen py-10 px-4 flex flex-col items-center">
 
@@ -436,6 +551,7 @@
                             <div>
                                 <p class="text-xs text-slate-500">تاریخ انقضا</p>
                                 <p class="text-sm font-bold text-slate-100" id="expireText">—</p>
+                                <p class="text-xs mt-0.5" id="remainingTime"></p>
                             </div>
                         </div>
                     </div>
@@ -551,17 +667,68 @@
     </div><!-- /container -->
 
     <script>
+        /* ── Theme toggle ── */
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light');
+            document.getElementById('icon-moon').classList.toggle('hidden', isLight);
+            document.getElementById('icon-sun').classList.toggle('hidden', !isLight);
+            localStorage.setItem('aurora-theme', isLight ? 'light' : 'dark');
+        }
+        // Restore saved preference
+        if (localStorage.getItem('aurora-theme') === 'light') {
+            document.body.classList.add('light');
+            document.getElementById('icon-moon').classList.add('hidden');
+            document.getElementById('icon-sun').classList.remove('hidden');
+        }
+
+        /* ── Trim GB suffix from config remarks ── */
+        function trimRemark(uri) {
+            if (uri.startsWith("vmess://")) {
+                try {
+                    const b64 = uri.substring(8);
+                    // safe decode: handle URL-safe base64 and padding
+                    const normalized = b64.replace(/-/g, '+').replace(/_/g, '/');
+                    const padded = normalized + '=='.slice(0, (4 - normalized.length % 4) % 4);
+                    const obj = JSON.parse(decodeURIComponent(escape(atob(padded))));
+                    const regex = /^(.*?)-\d+(?:\.\d+)?GB/;
+                    const match = obj.ps?.match(regex);
+                    if (match) obj.ps = match[1];
+                    // safe encode back
+                    return "vmess://" + btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+                } catch {
+                    return uri;
+                }
+            }
+            // Handle vless / trojan / shadowsocks
+            let base = uri;
+            let remark = "";
+            if (uri.includes("#")) {
+                const parts = uri.split("#");
+                base = parts[0];
+                remark = decodeURIComponent(parts.slice(1).join("#"));
+            }
+            const regex = /^(.*?)-\d+(?:\.\d+)?GB/;
+            const match = remark.match(regex);
+            if (match) {
+                return base + "#" + encodeURIComponent(match[1]);
+            } else if (remark) {
+                return base + "#" + encodeURIComponent(remark);
+            }
+            return uri;
+        }
+
         /* ── Helpers ── */
         function formatBytes(bytes, dec = 2) {
-            if (bytes === 0) return '۰ بایت';
+            if (bytes === 0) return '0 Bytes';
             const k = 1024;
-            const s = ['بایت', 'کیلوبایت', 'مگابایت', 'گیگابایت', 'ترابایت'];
+            const s = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
             const i = Math.floor(Math.log(Math.abs(bytes)) / Math.log(k));
-            return (Math.abs(bytes) / Math.pow(k, i)).toFixed(dec) * Math.sign(bytes) + ' ' + s[i];
+            const val = parseFloat((Math.abs(bytes) / Math.pow(k, i)).toFixed(dec));
+            return (val * Math.sign(bytes)) + ' ' + s[i];
         }
 
         async function copyItem(btn, text) {
-            try { await navigator.clipboard.writeText(text); } catch (_) { }
+            try { await navigator.clipboard.writeText(trimRemark(text)); } catch (_) { }
             btn.classList.add('copied');
             const orig = btn.innerHTML;
             btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -570,7 +737,9 @@
         }
 
         function copyAll() {
-            const uris = [...document.querySelectorAll('.conf-uri')].map(e => e.textContent.trim()).join('\n');
+            const uris = [...document.querySelectorAll('.conf-uri')]
+                .map(e => e.textContent.trim())
+                .join('\n');
             navigator.clipboard.writeText(uris).catch(() => { });
         }
 
@@ -608,21 +777,50 @@
 
         /* ── Expiry ── */
         const expEl = document.getElementById('expireText');
+        const remainingTimeEl = document.getElementById('remainingTime');
         if (expireRaw === '0' || !expireRaw) {
             expEl.textContent = 'بدون محدودیت';
+            remainingTimeEl.textContent = '';
         } else {
             const d = new Date(expireMs);
             const { jy, jm, jd } = jalaali.toJalaali(d.getFullYear(), d.getMonth() + 1, d.getDate());
-            expEl.textContent = `${jy}/${String(jm).padStart(2, '۰')}/${String(jd).padStart(2, '۰')}`;
+            expEl.textContent = `${jy}/${String(jm).padStart(2,'0')}/${String(jd).padStart(2,'0')}`;
+
+            const diff = expireMs - Date.now();
+            if (diff <= 0) {
+                remainingTimeEl.textContent = 'منقضی شده';
+                remainingTimeEl.className = 'text-xs mt-0.5 text-red-400';
+            } else {
+                const totalHours = Math.floor(diff / (1000 * 60 * 60));
+                const days = Math.floor(totalHours / 24);
+                const hours = totalHours % 24;
+                let label = '';
+                if (days > 0 && hours > 0) {
+                    label = `${days} روز و ${hours} ساعت مانده`;
+                } else if (days > 0) {
+                    label = `${days} روز مانده`;
+                } else {
+                    label = `${hours} ساعت مانده`;
+                }
+                remainingTimeEl.textContent = label;
+                remainingTimeEl.className = days <= 3
+                    ? 'text-xs mt-0.5 text-amber-400'
+                    : 'text-xs mt-0.5 text-emerald-400';
+            }
         }
 
         /* ── Status badge ── */
         const badge = document.getElementById('statusBadge');
         let badgeClass, badgeIcon, badgeLabel;
-        if (totalByte === 0) {
+        const trafficUnlimited = totalByte === 0;
+        const expireUnlimited = expireRaw === '0' || !expireRaw;
+        const trafficOk = trafficUnlimited || usedBytes <= totalByte;
+        const expireOk  = expireUnlimited  || expireMs >= Date.now();
+
+        if (trafficUnlimited && expireUnlimited) {
             badgeClass = 'badge-unlimited'; badgeLabel = 'نامحدود';
             badgeIcon = `<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 100-16 8 8 0 000 16zm-1-5h2v2h-2v-2zm0-8h2v6h-2V7z"/></svg>`;
-        } else if (expireMs >= Date.now() && usedBytes <= totalByte) {
+        } else if (trafficOk && expireOk) {
             badgeClass = 'badge-active'; badgeLabel = 'فعال';
             badgeIcon = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>`;
         } else {
@@ -631,20 +829,22 @@
         }
         badge.innerHTML = `<span class="badge ${badgeClass}">${badgeIcon}${badgeLabel}</span>`;
 
-        /* ── QR code ── */
-        document.addEventListener('DOMContentLoaded', () => {
-            try {
-                new QRious({
-                    element: document.getElementById('qrcode'),
-                    value: '{{ .subUrl }}',
-                    size: 180,
-                    level: 'H',
-                    background: '#ffffff',
-                    foreground: '#0f172a',
-                    padding: 12,
-                });
-            } catch (e) { console.error(e); }
+        /* ── Trim remarks in displayed config list ── */
+        document.querySelectorAll('.conf-uri').forEach(el => {
+            el.textContent = trimRemark(el.textContent.trim());
         });
+
+        /* ── QR code ── */
+        try {
+            new QRious({
+                element: document.getElementById('qrcode'),
+                value: '{{ .subUrl }}',
+                size: 180,
+                level: 'H',
+                background: '#ffffff',
+                foreground: '#0f172a'
+            });
+        } catch (e) { console.error(e); }
     </script>
 </body>
 
