@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ .sId }} — Aurora</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@33.003/Vazirmatn-Variable-font-face.css"
+        rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/jalaali-js/dist/jalaali.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+
+    <style>
+        :root {
+            --aurora-1: #0ea5e9;
+            --aurora-2: #8b5cf6;
+            --aurora-3: #06b6d4;
+            --aurora-4: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: #030712;
+            color: #f1f5f9;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Animated aurora background ── */
+        .aurora-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .aurora-bg::before,
+        .aurora-bg::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.18;
+            animation: drift 18s ease-in-out infinite alternate;
+        }
+
+        .aurora-bg::before {
+            width: 70vw;
+            height: 70vw;
+            background: radial-gradient(circle, var(--aurora-2) 0%, transparent 70%);
+            top: -25%;
+            left: -20%;
+            animation-duration: 16s;
+        }
+
+        .aurora-bg::after {
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, var(--aurora-1) 0%, transparent 70%);
+            bottom: -20%;
+            right: -15%;
+            animation-duration: 22s;
+            animation-delay: -8s;
+        }
+
+        .aurora-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.12;
+            background: radial-gradient(circle, var(--aurora-4) 0%, transparent 70%);
+            width: 45vw;
+            height: 45vw;
+            top: 40%;
+            left: 30%;
+            animation: drift 28s ease-in-out infinite alternate;
+            animation-delay: -12s;
+        }
+
+        @keyframes drift {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+
+            to {
+                transform: translate(6%, 8%) scale(1.12);
+            }
+        }
+
+        /* ── Glassmorphism card ── */
+        .glass {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(148, 163, 184, 0.10);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        /* ── Gradient text ── */
+        .text-aurora {
+            background: linear-gradient(135deg, var(--aurora-1), var(--aurora-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-aurora-green {
+            background: linear-gradient(135deg, var(--aurora-3), var(--aurora-4));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ── Glow border ── */
+        .glow-border {
+            box-shadow: 0 0 0 1px rgba(139, 92, 246, .3), 0 0 30px rgba(14, 165, 233, .08);
+        }
+
+        .glow-border:hover {
+            box-shadow: 0 0 0 1px rgba(139, 92, 246, .6), 0 0 40px rgba(14, 165, 233, .15);
+        }
+
+        /* ── Circular progress ── */
+        .ring-track {
+            stroke: rgba(148, 163, 184, 0.12);
+        }
+
+        .ring-fill {
+            stroke: url(#ringGrad);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1.2s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        /* ── Stat pill ── */
+        .stat-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* ── Copy button feedback ── */
+        .copy-btn {
+            transition: all .2s;
+        }
+
+        .copy-btn.copied {
+            color: #10b981;
+        }
+
+        /* ── App button ── */
+        .app-btn {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .7rem 1.25rem;
+            border-radius: .875rem;
+            font-weight: 600;
+            font-size: .875rem;
+            transition: all .25s;
+            border: 1px solid rgba(148, 163, 184, .12);
+        }
+
+        .app-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .app-btn-v2ray {
+            background: linear-gradient(135deg, #1e3a5f, #1e40af);
+        }
+
+        .app-btn-streak {
+            background: linear-gradient(135deg, #3b0764, #7c3aed);
+        }
+
+        .app-btn-v2box {
+            background: linear-gradient(135deg, #064e3b, #059669);
+        }
+
+        /* ── Slide in ── */
+        .slide-up {
+            opacity: 0;
+            transform: translateY(22px);
+            animation: slideUp .5s ease forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .d1 {
+            animation-delay: .05s;
+        }
+
+        .d2 {
+            animation-delay: .12s;
+        }
+
+        .d3 {
+            animation-delay: .19s;
+        }
+
+        .d4 {
+            animation-delay: .26s;
+        }
+
+        .d5 {
+            animation-delay: .33s;
+        }
+
+        .d6 {
+            animation-delay: .40s;
+        }
+
+        .d7 {
+            animation-delay: .47s;
+        }
+
+        /* ── Collapsible ── */
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .4s ease;
+        }
+
+        .collapsible-content.open {
+            max-height: 2000px;
+        }
+
+        /* ── Config item ── */
+        .config-item {
+            background: rgba(15, 23, 42, .8);
+            border: 1px solid rgba(148, 163, 184, .08);
+            border-radius: .75rem;
+            padding: .75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .config-text {
+            flex: 1;
+            font-size: .72rem;
+            line-height: 1.5;
+            font-family: 'Courier New', monospace;
+            color: #94a3b8;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ── Status badge ── */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .3rem .85rem;
+            border-radius: 9999px;
+            font-size: .78rem;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: rgba(16, 185, 129, .15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, .3);
+        }
+
+        .badge-inactive {
+            background: rgba(239, 68, 68, .12);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, .25);
+        }
+
+        .badge-unlimited {
+            background: rgba(14, 165, 233, .12);
+            color: #38bdf8;
+            border: 1px solid rgba(14, 165, 233, .3);
+        }
+
+        /* ── QR wrapper ── */
+        #qrcode {
+            border-radius: 1rem;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, .2);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Aurora background -->
+    <div class="aurora-bg">
+        <div class="aurora-blob"></div>
+    </div>
+
+    <div class="relative z-10 min-h-screen py-10 px-4 flex flex-col items-center">
+
+        <!-- ═══ Desktop grid wrapper (single col on mobile, two cols on lg+) ═══ -->
+        <div class="w-full max-w-lg lg:max-w-5xl">
+
+            <!-- ── Desktop: 2-col grid; Mobile: single stack ── -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:items-start">
+
+                <!-- ╔══════════════════════════════╗ -->
+                <!-- ║  LEFT COLUMN                 ║ -->
+                <!-- ╚══════════════════════════════╝ -->
+                <div class="flex flex-col gap-5">
+
+                    <!-- Header -->
+                    <div class="glass glow-border rounded-2xl p-6 text-center slide-up d1">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
+                            style="background:linear-gradient(135deg,rgba(14,165,233,.2),rgba(139,92,246,.2));border:1px solid rgba(139,92,246,.3)">
+                            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="url(#hdrGrad)"
+                                stroke-width="1.8">
+                                <defs>
+                                    <linearGradient id="hdrGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#0ea5e9" />
+                                        <stop offset="100%" stop-color="#8b5cf6" />
+                                    </linearGradient>
+                                </defs>
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 11c2.21 0 4-1.79 4-4S14.21 3 12 3 8 4.79 8 7s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                            </svg>
+                        </div>
+                        <h1 class="text-2xl font-bold text-aurora mb-1">{{ .sId }}</h1>
+                        <p class="text-slate-400 text-sm">اطلاعات اشتراک شما</p>
+                        <div class="mt-3" id="statusBadge"></div>
+                    </div>
+
+                    <!-- Traffic ring -->
+                    <div class="glass glow-border rounded-2xl p-6 slide-up d2">
+                        <h2 class="text-sm font-semibold text-slate-400 mb-5 text-center tracking-wider uppercase">
+                            مصرف ترافیک</h2>
+                        <div class="flex flex-col items-center">
+                            <div class="relative w-44 h-44">
+                                <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                                    <defs>
+                                        <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#0ea5e9" />
+                                            <stop offset="100%" stop-color="#8b5cf6" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle class="ring-track" cx="50" cy="50" r="42" fill="none" stroke-width="8" />
+                                    <circle id="ringFill" class="ring-fill" cx="50" cy="50" r="42" fill="none"
+                                        stroke-width="8" stroke-dasharray="263.9" stroke-dashoffset="263.9" />
+                                </svg>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span class="text-2xl font-bold text-aurora" id="usedPct">—</span>
+                                    <span class="text-xs text-slate-500 mt-0.5">مصرف شده</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-3 w-full mt-6">
+                                <div class="flex flex-col items-center p-3 rounded-xl"
+                                    style="background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2)">
+                                    <svg class="w-4 h-4 text-cyan-400 mb-1" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    <span class="text-xs text-slate-400">دانلود</span>
+                                    <span class="text-sm font-semibold text-cyan-300 mt-0.5">{{ .download }}</span>
+                                </div>
+                                <div class="flex flex-col items-center p-3 rounded-xl"
+                                    style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2)">
+                                    <svg class="w-4 h-4 text-amber-400 mb-1" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                    </svg>
+                                    <span class="text-xs text-slate-400">آپلود</span>
+                                    <span class="text-sm font-semibold text-amber-300 mt-0.5">{{ .upload }}</span>
+                                </div>
+                                <div class="flex flex-col items-center p-3 rounded-xl"
+                                    style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2)">
+                                    <svg class="w-4 h-4 text-emerald-400 mb-1" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 12h14M12 5l7 7-7 7" />
+                                    </svg>
+                                    <span class="text-xs text-slate-400">باقی‌مانده</span>
+                                    <span class="text-sm font-semibold text-emerald-300 mt-0.5" id="remainText">—</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info row: total + expire -->
+                    <div class="grid grid-cols-2 gap-4 slide-up d3">
+                        <div class="glass glow-border rounded-2xl p-4 flex items-center gap-3">
+                            <div class="stat-icon" style="background:rgba(14,165,233,.15)">
+                                <svg class="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500">کل حجم</p>
+                                <p class="text-sm font-bold text-slate-100" id="totalText">—</p>
+                            </div>
+                        </div>
+                        <div class="glass glow-border rounded-2xl p-4 flex items-center gap-3">
+                            <div class="stat-icon" style="background:rgba(139,92,246,.15)">
+                                <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500">تاریخ انقضا</p>
+                                <p class="text-sm font-bold text-slate-100" id="expireText">—</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /left column -->
+
+                <!-- ╔══════════════════════════════╗ -->
+                <!-- ║  RIGHT COLUMN                ║ -->
+                <!-- ╚══════════════════════════════╝ -->
+                <div class="flex flex-col gap-5">
+
+                    <!-- QR code -->
+                    <div class="glass glow-border rounded-2xl p-6 text-center slide-up d4">
+                        <p class="text-sm text-slate-400 mb-4">اسکن برای افزودن اشتراک</p>
+                        <div class="flex items-center justify-center">
+                            <div class="p-3 bg-white rounded-2xl">
+                                <canvas id="qrcode" style="display:block;"></canvas>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-3 truncate">{{ .subUrl }}</p>
+                    </div>
+
+                    <!-- Connection strings -->
+                    <div class="glass glow-border rounded-2xl overflow-hidden slide-up d5">
+                        <button onclick="toggleCollapse('configs','chevron-configs')"
+                            class="w-full flex items-center justify-between p-5 hover:bg-white/5 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="stat-icon" style="background:rgba(14,165,233,.15)">
+                                    <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                    </svg>
+                                </div>
+                                <span class="font-semibold text-sm">کانفیگ‌های اتصال</span>
+                            </div>
+                            <svg id="chevron-configs" class="w-4 h-4 text-slate-400 transition-transform duration-300"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div id="configs" class="collapsible-content">
+                            <div class="px-5 pb-5 space-y-2">
+                                <button onclick="copyAll()"
+                                    class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all mb-3"
+                                    style="background:linear-gradient(135deg,rgba(14,165,233,.2),rgba(139,92,246,.2));border:1px solid rgba(139,92,246,.3)">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                    کپی همه
+                                </button>
+                                {{ range .result }}
+                                <div class="config-item">
+                                    <span class="config-text conf-uri">{{ . }}</span>
+                                    <button onclick="copyItem(this,'{{ . }}')"
+                                        class="copy-btn flex-shrink-0 p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                {{ end }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- App buttons -->
+                    <div class="glass glow-border rounded-2xl p-5 slide-up d6">
+                        <p class="text-sm font-semibold text-slate-400 mb-4 text-center tracking-wider uppercase">
+                            افزودن به اپلیکیشن</p>
+                        <div class="flex flex-col gap-3">
+                            <a href="v2rayng://install-config?url={{ .subUrl }}"
+                                class="app-btn app-btn-v2ray justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                افزودن به V2RayNG
+                            </a>
+                            <a href="streisand://import/{{ .subUrl }}" class="app-btn app-btn-streak justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                افزودن به Streisand
+                            </a>
+                            <a href="v2box://install-sub?url={{ .subUrl }}&name={{ .sId }}"
+                                class="app-btn app-btn-v2box justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                افزودن به V2Box
+                            </a>
+                        </div>
+                    </div>
+
+                </div><!-- /right column -->
+
+            </div><!-- /grid -->
+
+            <!-- ── Footer (always full width) ── -->
+            <div class="text-center text-slate-600 text-xs py-4 mt-1 slide-up d7">
+                طراحی شده با ❤️ توسط
+                <a href="https://github.com/aghayecoder/tx-ui"
+                    class="text-aurora hover:opacity-80 transition-opacity">تی‌ایکس</a>
+            </div>
+
+        </div><!-- /max-w -->
+    </div><!-- /container -->
+
+    <script>
+        /* ── Helpers ── */
+        function formatBytes(bytes, dec = 2) {
+            if (bytes === 0) return '۰ بایت';
+            const k = 1024;
+            const s = ['بایت', 'کیلوبایت', 'مگابایت', 'گیگابایت', 'ترابایت'];
+            const i = Math.floor(Math.log(Math.abs(bytes)) / Math.log(k));
+            return (Math.abs(bytes) / Math.pow(k, i)).toFixed(dec) * Math.sign(bytes) + ' ' + s[i];
+        }
+
+        async function copyItem(btn, text) {
+            try { await navigator.clipboard.writeText(text); } catch (_) { }
+            btn.classList.add('copied');
+            const orig = btn.innerHTML;
+            btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+            setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 1500);
+        }
+
+        function copyAll() {
+            const uris = [...document.querySelectorAll('.conf-uri')].map(e => e.textContent.trim()).join('\n');
+            navigator.clipboard.writeText(uris).catch(() => { });
+        }
+
+        function toggleCollapse(id, iconId) {
+            const el = document.getElementById(id);
+            const ic = document.getElementById(iconId);
+            el.classList.toggle('open');
+            ic.style.transform = el.classList.contains('open') ? 'rotate(180deg)' : '';
+        }
+
+        /* ── Data ── */
+        const totalByte = parseInt('{{ .totalByte }}', 10) || 0;
+        const downloadByte = parseInt('{{ .downloadByte }}', 10) || 0;
+        const uploadByte = parseInt('{{ .uploadByte }}', 10) || 0;
+        const usedBytes = downloadByte + uploadByte;
+        const freeBytes = totalByte - usedBytes;
+        const expireRaw = '{{ .expire }}';
+        const expireMs = parseInt(expireRaw, 10) * 1000;
+
+        /* ── Traffic ring ── */
+        const ring = document.getElementById('ringFill');
+        const circumference = 263.9;
+        if (totalByte === 0) {
+            document.getElementById('usedPct').textContent = '∞';
+            document.getElementById('remainText').textContent = '∞';
+            document.getElementById('totalText').textContent = '∞';
+            ring.style.strokeDashoffset = '0';
+        } else {
+            const pct = Math.min(1, usedBytes / totalByte);
+            ring.style.strokeDashoffset = circumference * (1 - pct);
+            document.getElementById('usedPct').textContent = Math.round(pct * 100) + '%';
+            document.getElementById('remainText').textContent = formatBytes(Math.max(0, freeBytes));
+            document.getElementById('totalText').textContent = '{{ .total }}';
+        }
+
+        /* ── Expiry ── */
+        const expEl = document.getElementById('expireText');
+        if (expireRaw === '0' || !expireRaw) {
+            expEl.textContent = 'بدون محدودیت';
+        } else {
+            const d = new Date(expireMs);
+            const { jy, jm, jd } = jalaali.toJalaali(d.getFullYear(), d.getMonth() + 1, d.getDate());
+            expEl.textContent = `${jy}/${String(jm).padStart(2, '۰')}/${String(jd).padStart(2, '۰')}`;
+        }
+
+        /* ── Status badge ── */
+        const badge = document.getElementById('statusBadge');
+        let badgeClass, badgeIcon, badgeLabel;
+        if (totalByte === 0) {
+            badgeClass = 'badge-unlimited'; badgeLabel = 'نامحدود';
+            badgeIcon = `<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 100-16 8 8 0 000 16zm-1-5h2v2h-2v-2zm0-8h2v6h-2V7z"/></svg>`;
+        } else if (expireMs >= Date.now() && usedBytes <= totalByte) {
+            badgeClass = 'badge-active'; badgeLabel = 'فعال';
+            badgeIcon = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>`;
+        } else {
+            badgeClass = 'badge-inactive'; badgeLabel = 'غیرفعال';
+            badgeIcon = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>`;
+        }
+        badge.innerHTML = `<span class="badge ${badgeClass}">${badgeIcon}${badgeLabel}</span>`;
+
+        /* ── QR code ── */
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                new QRious({
+                    element: document.getElementById('qrcode'),
+                    value: '{{ .subUrl }}',
+                    size: 180,
+                    level: 'H',
+                    background: '#ffffff',
+                    foreground: '#0f172a',
+                    padding: 12,
+                });
+            } catch (e) { console.error(e); }
+        });
+    </script>
+</body>
+
+</html>
